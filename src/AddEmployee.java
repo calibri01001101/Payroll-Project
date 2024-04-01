@@ -1,7 +1,7 @@
 import javax.swing.*;
 
 public class AddEmployee extends JFrame implements Assets {
-
+    // Panel for the employee page that holds all the components
     public JPanel addEmployeePage() {
         JPanel panel = new JPanel();
         panel.setBackground(SECONDARY_BACKGROUND);

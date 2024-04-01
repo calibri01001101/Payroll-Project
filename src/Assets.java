@@ -3,7 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 public interface Assets {
-    final String GREEN_HEX = "#13F287";
+    // Colors that will be used for the entire project
     final String BLACK_HEX = "#0D0D0D";
     final String SECONDARY_WHITE = "#E1E1E1";
     final String TERTIARY_WHITE = "#A1A1A1";

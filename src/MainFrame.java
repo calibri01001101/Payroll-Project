@@ -45,7 +45,7 @@ public class MainFrame extends JFrame implements Assets {
         panel.setBackground(PRIMARY_BACKGROUND);
         panel.setLayout(null);
         add(panel);
-
+        // Creating an instance of the sidebar button/texts
         sideBarButton(panel, "Dashboard", 40);
         sideBarButton(panel, "Add Employee", 70);
         sideBarButton(panel, "Payroll", 100);
@@ -59,6 +59,7 @@ public class MainFrame extends JFrame implements Assets {
         label.setBounds(20, y, 200, 20);
         label.setFont(new Font(label.getFont().getName(), Font.BOLD, 18));
 
+        // When a label is clicked it will show the page for it
         label.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

@@ -3,7 +3,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 
 public class Dashboard extends JFrame implements Assets{
-
+    // Panel for the dashboard page that holds all the components
     public JPanel dashboardPage() {
         JPanel panel = new JPanel();
         panel.setBackground(SECONDARY_BACKGROUND);
