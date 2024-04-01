@@ -1,0 +1,93 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class MainFrame extends JFrame implements Assets {
+    // JLayeredPane that will hold the page to show
+    JLayeredPane layeredPane;
+    public MainFrame() {
+        // Set the title for the window
+        super("Payroll System");
+        // To close the window when exit button is clicked
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        // Setting the size of the window
+        setSize(1000, 600);
+        // To open the gui window at the center of the screen
+        setLocationRelativeTo(null);
+        // To move freely the components
+        setLayout(null);
+        // For the window to become not resizable
+        setResizable(false);
+
+        initializeComponents();
+    }
+
+    // Initializing the components that need to be shown on screen
+    public void initializeComponents() {
+        sideBar();
+        pagesHolder();
+    }
+
+    // First page to show when the app opens
+    public void pagesHolder() {
+        layeredPane = new JLayeredPane();
+        layeredPane.setBounds(200, 0, 800, 600);
+        add(layeredPane);
+        Dashboard dashboardPage = new Dashboard();
+        layeredPane.add(dashboardPage.dashboardPage());
+    }
+
+    // Sidebar that contains the options where the user can navigate
+    public void sideBar() {
+        JPanel panel = new JPanel();
+        panel.setBounds(0, 0, 200, 600);
+        panel.setBackground(PRIMARY_BACKGROUND);
+        panel.setLayout(null);
+        add(panel);
+
+        sideBarButton(panel, "Dashboard", 40);
+        sideBarButton(panel, "Add Employee", 70);
+        sideBarButton(panel, "Payroll", 100);
+
+    }
+
+    // Sidebar label selection
+    public void sideBarButton(JPanel panel, String title, int y) {
+        JLabel label = new JLabel(title);
+        label.setForeground(HEADING_COLOR);
+        label.setBounds(20, y, 200, 20);
+        label.setFont(new Font(label.getFont().getName(), Font.BOLD, 18));
+
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if(label.getText().equals("Add Employee")) {
+                    AddEmployee addEmployeePage = new AddEmployee();
+                    layeredPane.removeAll();
+                    layeredPane.add(addEmployeePage.addEmployeePage());
+                    layeredPane.repaint();
+                    layeredPane.revalidate();
+                }
+                if(label.getText().equals("Dashboard")) {
+                    Dashboard dashboardPage = new Dashboard();
+                    layeredPane.removeAll();
+                    layeredPane.add(dashboardPage.dashboardPage());
+                    layeredPane.repaint();
+                    layeredPane.revalidate();
+                }
+                if(label.getText().equals("Payroll")) {
+                    Payroll payrollPage = new Payroll();
+                    layeredPane.removeAll();
+                    layeredPane.add(payrollPage.payrollPage());
+                    label.repaint();
+                    layeredPane.revalidate();
+                }
+            }
+        });
+        panel.add(label);
+    }
+
+
+}
