@@ -63,8 +63,10 @@ public class Dashboard extends JFrame implements Assets{
 
         // Create the table with the model
         JTable table = new JTable(model);
-
+        table.setRowHeight(20);
         customizeRow(table);
+        setCustomRowColors(table);
+        table.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
 
         // Add the table to a scroll pane
         JScrollPane scrollPane = new JScrollPane(table);
@@ -78,7 +80,6 @@ public class Dashboard extends JFrame implements Assets{
 
     // Method to customize the appearance of a specific row
     // I used chatGpt for this :)
-
     private void customizeRow(JTable table) {
         TableColumn column = table.getColumnModel().getColumn(3);
         column.setCellRenderer(new DefaultTableCellRenderer() {
@@ -98,6 +99,14 @@ public class Dashboard extends JFrame implements Assets{
         });
     }
 
-
-
+    private void setCustomRowColors(JTable table) {
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                c.setBackground(row % 2 == 0 ? PRIMARY_BACKGROUND : SECONDARY_BACKGROUND);
+                return c;
+            }
+        });
+    }
 }

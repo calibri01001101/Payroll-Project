@@ -7,11 +7,13 @@ public interface Assets {
     final String BLACK_HEX = "#0D0D0D";
     final String SECONDARY_WHITE = "#E1E1E1";
     final String TERTIARY_WHITE = "#A1A1A1";
+    final String GREEN = "#28a745";
     final Color SECONDARY_BACKGROUND = hexToColor(SECONDARY_WHITE);
     final Color PRIMARY_BACKGROUND = Color.WHITE;
     final Color HEADING_COLOR = hexToColor(BLACK_HEX);
     final Color SUBHEADING_COLOR = hexToColor(SECONDARY_WHITE);
     final Color SPAN_COLOR = hexToColor(TERTIARY_WHITE);
+    final Color SUCCESS = hexToColor(GREEN);
 
 
 
