@@ -3,7 +3,6 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.text.TableView;
 import java.awt.*;
 
 public class Dashboard extends JFrame implements Assets{
