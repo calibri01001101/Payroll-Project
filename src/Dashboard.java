@@ -55,21 +55,17 @@ public class Dashboard extends JFrame implements Assets{
         panel.setBackground(PRIMARY_BACKGROUND);
         panel.setLayout(new BorderLayout());
 
-        // Create the table model with data and column names
         String[][] data = Assets.fileReader("employees_details");
         Object[] columns = {"Full Name", "Phone Number", "Position"};
         DefaultTableModel model = new DefaultTableModel(data, columns);
 
-        // Create the table with the model
         JTable table = new JTable(model);
         table.setRowHeight(20);
         setCustomRowColors(table);
         table.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
 
-        // Add the table to a scroll pane
         JScrollPane scrollPane = new JScrollPane(table);
 
-        // Add the scroll pane to the panel
         panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;

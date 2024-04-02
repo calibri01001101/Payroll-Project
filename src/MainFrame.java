@@ -48,7 +48,8 @@ public class MainFrame extends JFrame implements Assets {
         // Creating an instance of the sidebar button/texts
         sideBarButton(panel, "Dashboard", 40);
         sideBarButton(panel, "Add Employee", 70);
-        sideBarButton(panel, "Payroll", 100);
+        sideBarButton(panel, "Payroll Manager", 100);
+        sideBarButton(panel, "Payroll List", 130);
 
     }
 
@@ -56,7 +57,7 @@ public class MainFrame extends JFrame implements Assets {
     public void sideBarButton(JPanel panel, String title, int y) {
         JLabel label = new JLabel(title);
         label.setForeground(HEADING_COLOR);
-        label.setBounds(20, y, 200, 20);
+        label.setBounds(20, y, 200, 25);
         label.setFont(new Font(label.getFont().getName(), Font.BOLD, 18));
 
         // When a label is clicked it will show the page for it
@@ -78,10 +79,17 @@ public class MainFrame extends JFrame implements Assets {
                     layeredPane.repaint();
                     layeredPane.revalidate();
                 }
-                if(label.getText().equals("Payroll")) {
+                if(label.getText().equals("Payroll Manager")) {
                     PayrollManager payrollManagerPage = new PayrollManager();
                     layeredPane.removeAll();
                     layeredPane.add(payrollManagerPage.payrollPage());
+                    label.repaint();
+                    layeredPane.revalidate();
+                }
+                if(label.getText().equals("Payroll List")) {
+                    PayrollList payrollList = new PayrollList();
+                    layeredPane.removeAll();
+                    layeredPane.add(payrollList.payrollList());
                     label.repaint();
                     layeredPane.revalidate();
                 }
