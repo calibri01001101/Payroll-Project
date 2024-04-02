@@ -29,6 +29,7 @@ public class AddEmployee extends JFrame implements Assets {
         panel.setLayout(null);
         panel.setBackground(PRIMARY_BACKGROUND);
         panel.setBounds(20, 20, 300, 420);
+        panel.setBorder(new RoundedBorder(20, Color.BLACK));
         personalInformationLabel(panel);
         textField(panel, 40, "Full Name", fullName);
         textField(panel, 90, "Phone Number", phoneNumber);
@@ -49,18 +50,20 @@ public class AddEmployee extends JFrame implements Assets {
     }
     // Text field and label
     public void textField(JPanel panel, int y, String title, JTextField value) {
-        value.setBounds(10, y, 280, 30);
-        panel.add(value);
-
         JLabel label = new JLabel(title);
         label.setBounds(10, y + 20, 200, 30);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         panel.add(label);
+
+        value.setBounds(10, y, 280, 30);
+
+        panel.add(value);
     }
     // Button for adding an employee
     public void addButton(JPanel panel) {
         JButton button = new JButton("ADD");
         button.setBounds(190, 390, 100, 20);
+        button.setBackground(SECONDARY_BACKGROUND);
         button.addActionListener(e -> {
             try {
                 // Object for writing a data to a file

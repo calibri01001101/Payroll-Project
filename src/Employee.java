@@ -6,6 +6,42 @@ public class Employee {
     private String tin;
     private String philHeath;
     private String pagIbig;
+    private double netPay;
+    private double grossPay;
+    private double totalDeductions;
+
+    public Employee(String fullName, String phoneNumber, String position, String sss, String tin, String philHeath, String pagIbig) {
+        this.fullName = fullName;
+        this.phoneNumber = phoneNumber;
+        this.position = position;
+        this.sss = sss;
+        this.tin = tin;
+        this.philHeath = philHeath;
+        this.pagIbig = pagIbig;
+    }
+    public double getNetPay() {
+        return netPay;
+    }
+
+    public void setNetPay(double netPay) {
+        this.netPay = netPay;
+    }
+
+    public double getGrossPay() {
+        return grossPay;
+    }
+
+    public void setGrossPay(double grossPay) {
+        this.grossPay = grossPay;
+    }
+
+    public double getTotalDeductions() {
+        return totalDeductions;
+    }
+
+    public void setTotalDeductions(double totalDeductions) {
+        this.totalDeductions = totalDeductions;
+    }
 
     public String getFullName() {
         return fullName;

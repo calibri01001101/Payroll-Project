@@ -79,9 +79,9 @@ public class MainFrame extends JFrame implements Assets {
                     layeredPane.revalidate();
                 }
                 if(label.getText().equals("Payroll")) {
-                    Payroll payrollPage = new Payroll();
+                    PayrollManager payrollManagerPage = new PayrollManager();
                     layeredPane.removeAll();
-                    layeredPane.add(payrollPage.payrollPage());
+                    layeredPane.add(payrollManagerPage.payrollPage());
                     label.repaint();
                     layeredPane.revalidate();
                 }

@@ -15,8 +15,6 @@ public interface Assets {
     final Color PRIMARY_BACKGROUND = Color.WHITE;
     final Color HEADING_COLOR = hexToColor(BLACK_HEX);
     final Color SUBHEADING_COLOR = hexToColor(SECONDARY_WHITE);
-    final Color SPAN_COLOR = hexToColor(TERTIARY_WHITE);
-    final Color SUCCESS = hexToColor(GREEN);
 
 
 
@@ -25,7 +23,6 @@ public interface Assets {
         return Color.decode(hex);
     }
 
-    // CSV READER
     static String[][] fileReader(String fileLocation) {
         List<String[]> dataList = new ArrayList<>();
         try {
@@ -41,6 +38,7 @@ public interface Assets {
         }
         return dataList.toArray(new String[0][]);
     }
+
 
 
 
