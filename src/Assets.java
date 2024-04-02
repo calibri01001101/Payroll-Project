@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public interface Assets {
     // Colors that will be used for the entire project
@@ -23,21 +26,20 @@ public interface Assets {
     }
 
     // CSV READER
-    static String[][] csvReader(String fileLocation) {
-        String[][] arr = new String[20][];
+    static String[][] fileReader(String fileLocation) {
+        List<String[]> dataList = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileLocation));
-            int count = 0;
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                arr[count] = data;
-                count++;
+                String[] data = line.split("\\|");
+                dataList.add(data);
             }
+            reader.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return arr;
+        return dataList.toArray(new String[0][]);
     }
 
 

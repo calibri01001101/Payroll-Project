@@ -1,10 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class AddEmployee extends JFrame implements Assets {
     private final JTextField fullName = new JTextField();
     private final JTextField phoneNumber = new JTextField();
-    private final JTextField address = new JTextField();
+    private final JTextField position = new JTextField();
     private final JTextField sss = new JTextField();
     private final JTextField tin = new JTextField();
     private final JTextField philHealth = new JTextField();
@@ -29,7 +32,7 @@ public class AddEmployee extends JFrame implements Assets {
         personalInformationLabel(panel);
         textField(panel, 40, "Full Name", fullName);
         textField(panel, 90, "Phone Number", phoneNumber);
-        textField(panel, 140, "Address", address);
+        textField(panel, 140, "Address", position);
         textField(panel, 190, "SSS", sss);
         textField(panel, 240, "TIN",tin);
         textField(panel, 290, "PAG-IBIG", pagIbig);
@@ -44,7 +47,7 @@ public class AddEmployee extends JFrame implements Assets {
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         panel.add(label);
     }
-
+    // Text field and label
     public void textField(JPanel panel, int y, String title, JTextField value) {
         value.setBounds(10, y, 280, 30);
         panel.add(value);
@@ -54,17 +57,42 @@ public class AddEmployee extends JFrame implements Assets {
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         panel.add(label);
     }
-
-
+    // Button for adding an employee
     public void addButton(JPanel panel) {
         JButton button = new JButton("ADD");
         button.setBounds(190, 390, 100, 20);
-
         button.addActionListener(e -> {
-            System.out.println(fullName.getText());
-            System.out.println(phoneNumber.getText());
+            try {
+                // Object for writing a data to a file
+                BufferedWriter writer = new BufferedWriter(new FileWriter("employees_details", true));
+                // Setting the value of the variable by getting the value of the text field
+                String full_name = fullName.getText().trim();
+                String phone_number = phoneNumber.getText().trim();
+                String _address = position.getText().trim();
+                // I used ternary operator here so if the value of the text field is empty it will show unknown
+                String sssNumber = sss.getText().trim().isEmpty() ? "unknown" : sss.getText().trim();
+                String tinNumber = tin.getText().trim().isEmpty() ? "unknown" : tin.getText().trim();
+                String philHealthNumber = philHealth.getText().trim().isEmpty() ? "unknown" : philHealth.getText().trim();
+                String pagIbigNumber = pagIbig.getText().trim().trim().isEmpty() ? "unknown" : pagIbig.getText().trim();
+                // Checking if the value of full name, phone number and address is set.
+                if(!full_name.isEmpty() && !phone_number.isEmpty() && !_address.isEmpty()) {
+                    writer.write(full_name + " | " +
+                            phone_number + " | " +
+                            _address + " | " +
+                            sssNumber + " | " +
+                            tinNumber + " | " +
+                            philHealthNumber + " | " +
+                            pagIbigNumber + " | " );
+                    writer.close();
+                    JOptionPane.showMessageDialog(addEmployeePage(), "Added Successfully!");
+                    return;
+                }
+                JOptionPane.showMessageDialog(addEmployeePage(), "Full Name, Phone Number and Position can't be empty.");
+                writer.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
-
         panel.add(button);
     }
 }

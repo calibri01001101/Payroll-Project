@@ -56,14 +56,13 @@ public class Dashboard extends JFrame implements Assets{
         panel.setLayout(new BorderLayout());
 
         // Create the table model with data and column names
-        String[][] data = Assets.csvReader("C:\\Users\\natha\\OneDrive\\Documents\\employee_list.txt");
-        Object[] columns = {"Full Name", "Position", "Salary Amount", "Status"};
+        String[][] data = Assets.fileReader("employees_details");
+        Object[] columns = {"Full Name", "Phone Number", "Position"};
         DefaultTableModel model = new DefaultTableModel(data, columns);
 
         // Create the table with the model
         JTable table = new JTable(model);
         table.setRowHeight(20);
-        customizeRow(table);
         setCustomRowColors(table);
         table.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
 
@@ -80,7 +79,7 @@ public class Dashboard extends JFrame implements Assets{
     // Method to customize the appearance of a specific row
     // I used chatGpt for this :)
     private void customizeRow(JTable table) {
-        TableColumn column = table.getColumnModel().getColumn(3);
+        TableColumn column = table.getColumnModel().getColumn(2);
         column.setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
