@@ -3,6 +3,7 @@ import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.InputMismatchException;
 
 public class AddEmployee extends JFrame implements Assets {
     private final JTextField fullName = new JTextField();
@@ -33,7 +34,7 @@ public class AddEmployee extends JFrame implements Assets {
         personalInformationLabel(panel);
         textField(panel, 40, "Full Name", fullName);
         textField(panel, 90, "Phone Number", phoneNumber);
-        textField(panel, 140, "Address", position);
+        textField(panel, 140, "Position", position);
         textField(panel, 190, "SSS", sss);
         textField(panel, 240, "TIN",tin);
         textField(panel, 290, "PAG-IBIG", pagIbig);
@@ -85,17 +86,33 @@ public class AddEmployee extends JFrame implements Assets {
                             sssNumber + " | " +
                             tinNumber + " | " +
                             philHealthNumber + " | " +
-                            pagIbigNumber + " | " );
+                            pagIbigNumber + " | " +
+                            "0" + " | " +
+                            "0" + " | " +
+                            "0" + "\n"
+                    );
                     writer.close();
-                    JOptionPane.showMessageDialog(addEmployeePage(), "Added Successfully!");
+                    JOptionPane.showMessageDialog(addEmployeePage(), "Added successfully.");
                     return;
                 }
                 JOptionPane.showMessageDialog(addEmployeePage(), "Full Name, Phone Number and Position can't be empty.");
                 writer.close();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+            } catch (InputMismatchException | IOException el) {
+                JOptionPane.showMessageDialog(addEmployeePage(), "Invalid input. Please try again.");
             }
         });
         panel.add(button);
     }
+
+    public void emptyTextField() {
+        fullName.setText("");
+        phoneNumber.setText("");
+        position.setText("");
+        sss.setText("");
+        tin.setText("");
+        philHealth.setText("");
+        pagIbig.setText("");
+
+    }
+
 }

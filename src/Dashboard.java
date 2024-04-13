@@ -14,10 +14,10 @@ public class Dashboard extends JFrame implements Assets{
         panel.setBounds(0, 0, 800, 600);
         panel.setLayout(null);
         add(panel);
-        panel.add(amountBox(20, "AMOUNT", "$1,342.92"));
-        panel.add(amountBox(210, "AMOUNT", "$1,342.92"));
-        panel.add(amountBox(400, "AMOUNT", "$1,342.92"));
-        panel.add(amountBox(590, "AMOUNT", "$1,342.92"));
+        panel.add(amountBox(20, "AMOUNT", "0"));
+        panel.add(amountBox(210, "AMOUNT", "0"));
+        panel.add(amountBox(400, "AMOUNT", "0"));
+        panel.add(amountBox(590, "AMOUNT", "0"));
 
         panel.add(tablePanel());
 

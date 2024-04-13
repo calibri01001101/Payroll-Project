@@ -10,7 +10,7 @@ public class Employee {
     private double grossPay;
     private double totalDeductions;
 
-    public Employee(String fullName, String phoneNumber, String position, String sss, String tin, String philHeath, String pagIbig) {
+    public Employee(String fullName, String phoneNumber, String position, String sss, String tin, String philHeath, String pagIbig, double netPay, double grossPay, double totalDeductions) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.position = position;
@@ -18,7 +18,11 @@ public class Employee {
         this.tin = tin;
         this.philHeath = philHeath;
         this.pagIbig = pagIbig;
+        this.netPay = netPay;
+        this.grossPay = grossPay;
+        this.totalDeductions = totalDeductions;
     }
+
     public double getNetPay() {
         return netPay;
     }
