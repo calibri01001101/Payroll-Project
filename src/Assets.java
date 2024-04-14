@@ -17,19 +17,4 @@ public interface Assets {
         return Color.decode(hex);
     }
 
-    static String[][] fileReader(String fileLocation) {
-        List<String[]> dataList = new ArrayList<>();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileLocation));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split("\\|");
-                dataList.add(data);
-            }
-            reader.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return dataList.toArray(new String[0][]);
-    }
 }

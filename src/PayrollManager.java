@@ -2,13 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PayrollManager extends JFrame implements Assets, Calculators, ActionListener {
+public class PayrollManager extends JFrame implements Assets, Calculators, ActionListener, FileMethods {
     private final JTextField employeeName = new JTextField();
     private final JTextField salaryRate = new JTextField("560");
     private final JTextField daysWorked = new JTextField();
@@ -34,15 +33,12 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     private double totalGovernmentDeductions;
     private double netPay;
     private static JComboBox names;
-    private static JComboBox rates;
     // Hashmap for the list of employees
     HashMap<String, Employee> employeeList = new HashMap<>();
     // Panel for the payroll page that holds all the components
     public JPanel payrollPage() {
-        // Clearing the list before adding the data from the file to avoid duplication
-        employeeList.clear();
         // Storing the getting all the employees data from the file
-        getEmployeesData();
+        FileMethods.getData(employeeList);
         JPanel panel = new JPanel();
         panel.setBackground(SECONDARY_BACKGROUND);
         panel.setBounds(0, 0, 800, 600);
@@ -142,7 +138,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
                 employee.setGrossPay(grossPay);
                 employee.setTotalDeductions(totalGovernmentDeductions);
                 // Updating the details on the database/file
-                updateDataBaseDetails();
+                FileMethods.updateData(employeeList);
             }catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(panel, "Please input a valid number.");
             }
@@ -198,56 +194,6 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
         label.setBounds(x, 85, 300, 15);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         panel.add(label);
-    }
-    // This line will get all the data from the file/database
-    public void getEmployeesData () {
-        // Clearing the list first before adding the details to avoid duplication
-        employeeList.clear();
-        try {
-            // Creating an instance of the object BufferedWriter and putting the file path as an argument
-            BufferedReader reader = new BufferedReader(new FileReader("employees_details"));
-            String line;
-            // While the line is not equals to null it will continue the loop
-            while((line = reader.readLine()) != null) {
-                // Converting the line of details to an array
-                // Result will be
-                // [name, phone, position, etc.]
-                String[] data = line.split("\\|");
-                // Putting the data on the hashmap and making the name of the employee as the key
-                 employeeList.put(data[0].trim(), new Employee(data[0], data[1], data[2], data[3], data[4], data[5], data[6], Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9])));
-            }
-            reader.close();
-        }catch (FileNotFoundException e) {
-            System.out.println("File not found!");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    // This function updates the database/file whenever the button is clicked
-    public void updateDataBaseDetails() {
-        try {
-            // Creating an instance of the object BufferedWriter and putting the file path as an argument
-            BufferedWriter file = new BufferedWriter(new FileWriter("employees_details"));
-            // This for loop enters the hashmap and for each item in the hashmap it will create a line of details
-            // Format
-            // Name | Phone Number | Position | SSS | TIN | PHIL-HEALTH | PAG_IBIG | GROSS PAY | TOTAL DEDUCTIONS | NET PAY
-            for(Map.Entry<String, Employee> in : employeeList.entrySet()) {
-                file.write(in.getValue().getFullName() + " | " +
-                        in.getValue().getPhoneNumber() + " | " +
-                        in.getValue().getPosition() + " | " +
-                        in.getValue().getSss() + " | " +
-                        in.getValue().getTin() + " | " +
-                        in.getValue().getPhilHeath() + " | " +
-                        in.getValue().getPagIbig() + " | " +
-                        in.getValue().getGrossPay() + " | " +
-                        in.getValue().getTotalDeductions() + " | " +
-                        in.getValue().getNetPay() + "\n"
-                );
-            }
-            file.close();
-        }catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
     }
     // this is for the name combo box
     void namesComboBox(JPanel panel) {

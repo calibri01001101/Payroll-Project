@@ -47,13 +47,14 @@ public class PayrollList extends JFrame implements Assets {
     }
     // Function to get the employees from a file
     public String[][] employeesList() {
+        // Creating an array list of employees
         ArrayList<Employee> employees  = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader("employees_details"));
             String line;
             while((line = reader.readLine()) != null) {
                 String[] data = line.split("\\|");
-                assert false;
+                // Putting an object of employee inside the arraylist
                 employees.add(new Employee(data[0], data[1], data[2], data[3], data[4], data[5], data[6], Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9])));
             }
         }catch (FileNotFoundException e) {
@@ -61,7 +62,6 @@ public class PayrollList extends JFrame implements Assets {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        assert false;
         // Converting the arraylist to a 2D array
         String[][] employeeArray = new String[employees.size()][];
         for (int i = 0; i < employees.size(); i++) {

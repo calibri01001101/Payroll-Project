@@ -4,20 +4,33 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class Dashboard extends JFrame implements Assets{
+public class Dashboard extends JFrame implements Assets, FileMethods{
+    private int totalEmployees;
+    private double totalDeductions;
+    private double totalGrossPay;
+    private double totalNetPay;
+    private final HashMap<String, Employee> employeesDetail = new HashMap<>();
     // Panel for the dashboard page that holds all the components
     // This dashboard page contains the summary of all the amounts and all the employee's details,
     public JPanel dashboardPage() {
+        divInformation();
         JPanel panel = new JPanel();
         panel.setBackground(SECONDARY_BACKGROUND);
         panel.setBounds(0, 0, 800, 600);
         panel.setLayout(null);
         add(panel);
-        panel.add(amountBox(20, "AMOUNT", "0"));
-        panel.add(amountBox(210, "AMOUNT", "0"));
-        panel.add(amountBox(400, "AMOUNT", "0"));
-        panel.add(amountBox(590, "AMOUNT", "0"));
+        panel.add(amountBox(20, "Total Employees", String.valueOf(totalEmployees)));
+        panel.add(amountBox(210, "Total Net Pay", String.valueOf(totalNetPay)));
+        panel.add(amountBox(400, "Total Gross Pay", String.valueOf(totalGrossPay)));
+        panel.add(amountBox(590, "Total Deductions", String.valueOf(totalDeductions)));
 
         panel.add(tablePanel());
 
@@ -55,7 +68,7 @@ public class Dashboard extends JFrame implements Assets{
         panel.setBackground(PRIMARY_BACKGROUND);
         panel.setLayout(new BorderLayout());
 
-        String[][] data = Assets.fileReader("employees_details");
+        String[][] data = getAllData("employees_details");
         Object[] columns = {"Full Name", "Phone Number", "Position"};
         DefaultTableModel model = new DefaultTableModel(data, columns);
 
@@ -70,6 +83,32 @@ public class Dashboard extends JFrame implements Assets{
 
         return panel;
 
+    }
+
+    public String[][] getAllData(String fileLocation) {
+        List<String[]> dataList = new ArrayList<>();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileLocation));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split("\\|");
+                dataList.add(data);
+            }
+            reader.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return dataList.toArray(new String[0][]);
+    }
+
+    public void divInformation() {
+        FileMethods.getData(employeesDetail);
+        totalEmployees = employeesDetail.size();
+        for(Map.Entry<String, Employee> employee : employeesDetail.entrySet()) {
+            totalDeductions += employee.getValue().getTotalDeductions();
+            totalNetPay += employee.getValue().getNetPay();
+            totalGrossPay += employee.getValue().getGrossPay();
+        }
     }
 
     // Method to customize the appearance of a specific row

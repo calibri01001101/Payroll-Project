@@ -55,9 +55,7 @@ public class AddEmployee extends JFrame implements Assets {
         label.setBounds(10, y + 20, 200, 30);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         panel.add(label);
-
         value.setBounds(10, y, 280, 30);
-
         panel.add(value);
     }
     // Button for adding an employee
