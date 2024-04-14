@@ -93,6 +93,7 @@ public class AddEmployee extends JFrame implements Assets {
                     JOptionPane.showMessageDialog(addEmployeePage(), "Added successfully.");
                     return;
                 }
+                // If important information is empty this will show
                 JOptionPane.showMessageDialog(addEmployeePage(), "Full Name, Phone Number and Position can't be empty.");
                 writer.close();
             } catch (InputMismatchException | IOException el) {

@@ -28,7 +28,7 @@ public interface FileMethods {
             System.out.println(e.getMessage());
         }
     }
-    // This line will get all the data from the file/database
+    // This line will get all the data from the file/database and store it on a hash amp
     static void getData(HashMap<String, Employee> list) {
         // Clearing the list first before adding the details to avoid duplication
         list.clear();

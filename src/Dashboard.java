@@ -17,6 +17,7 @@ public class Dashboard extends JFrame implements Assets, FileMethods{
     private double totalDeductions;
     private double totalGrossPay;
     private double totalNetPay;
+    // List for the employees detail
     private final HashMap<String, Employee> employeesDetail = new HashMap<>();
     // Panel for the dashboard page that holds all the components
     // This dashboard page contains the summary of all the amounts and all the employee's details,
@@ -31,9 +32,7 @@ public class Dashboard extends JFrame implements Assets, FileMethods{
         panel.add(amountBox(210, "Total Net Pay", String.valueOf(totalNetPay)));
         panel.add(amountBox(400, "Total Gross Pay", String.valueOf(totalGrossPay)));
         panel.add(amountBox(590, "Total Deductions", String.valueOf(totalDeductions)));
-
         panel.add(tablePanel());
-
         return panel;
     }
 
@@ -84,54 +83,42 @@ public class Dashboard extends JFrame implements Assets, FileMethods{
         return panel;
 
     }
-
+    // Function to get all the information from the text file and returning 2D array
     public String[][] getAllData(String fileLocation) {
+        // List of data from the file
         List<String[]> dataList = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileLocation));
             String line;
             while ((line = reader.readLine()) != null) {
+                // Creating an array of data using the function .split()
                 String[] data = line.split("\\|");
+                // Adding the data on the list
                 dataList.add(data);
             }
             reader.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+        // converting the array list to 2D array and returning it
         return dataList.toArray(new String[0][]);
     }
-
+    // This function fill out the information for the four boxes
     public void divInformation() {
+        // Getting all the data first from the file
         FileMethods.getData(employeesDetail);
+        // Getting the size of the array and initialized the value of total employees
         totalEmployees = employeesDetail.size();
+        // Looping for each data in the hash map
         for(Map.Entry<String, Employee> employee : employeesDetail.entrySet()) {
+            // Getting the deduction from an employee and adding it on total deductions
             totalDeductions += employee.getValue().getTotalDeductions();
+            // Getting the net pay from an employee and adding it on total net pay
             totalNetPay += employee.getValue().getNetPay();
+            // Getting the gross pay from an employee and adding it on total gross pay
             totalGrossPay += employee.getValue().getGrossPay();
         }
     }
-
-    // Method to customize the appearance of a specific row
-    // I used chatGpt for this :)
-    private void customizeRow(JTable table) {
-        TableColumn column = table.getColumnModel().getColumn(2);
-        column.setCellRenderer(new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                String status = (String) value;
-                if ("Paid".equals(status)) {
-                    component.setBackground(Color.GREEN);
-                    component.setForeground(Color.WHITE);
-                } else {
-                    component.setBackground(Color.RED);
-                    component.setForeground(Color.WHITE);
-                }
-                return component;
-            }
-        });
-    }
-
     private void setCustomRowColors(JTable table) {
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override

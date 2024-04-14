@@ -3,7 +3,7 @@ import java.awt.*;
 
 public class RoundedBorder implements Border {
     // This is the code for the borders of each panel
-    // Chat gpt code
+    // Chat gpt code:)
     private int radius;
     private Color borderColor; // Added variable for border color
 

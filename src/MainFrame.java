@@ -67,8 +67,11 @@ public class MainFrame extends JFrame implements Assets {
                 super.mouseClicked(e);
                 if(label.getText().equals("Add Employee")) {
                     AddEmployee addEmployeePage = new AddEmployee();
+                    // Removing the current layered pane
                     layeredPane.removeAll();
+                    // adding the pane that is clicked
                     layeredPane.add(addEmployeePage.addEmployeePage());
+                    // Refreshing the page
                     layeredPane.repaint();
                     layeredPane.revalidate();
                 }
