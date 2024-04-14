@@ -12,8 +12,6 @@ public interface Assets {
     final Color HEADING_COLOR = hexToColor("#0D0D0D");
     final Color SUBHEADING_COLOR = hexToColor("#E1E1E1");
 
-
-
     // Converting the hexadecimal code to a color
     static Color hexToColor(String hex) {
         return Color.decode(hex);
@@ -34,8 +32,4 @@ public interface Assets {
         }
         return dataList.toArray(new String[0][]);
     }
-
-
-
-
 }

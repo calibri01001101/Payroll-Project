@@ -1,42 +1,55 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PayrollManager extends JFrame implements Assets {
+public class PayrollManager extends JFrame implements Assets, Calculators, ActionListener {
     private final JTextField employeeName = new JTextField();
-    private final JTextField salaryRate = new JTextField();
+    private final JTextField salaryRate = new JTextField("560");
     private final JTextField daysWorked = new JTextField();
     private final JTextField hoursOvertime = new JTextField();
     private final JTextField hoursLate = new JTextField();
     private final JTextField advancedPay = new JTextField();
     private final JTextField regularHoliday = new JTextField();
     private final JTextField specialHolidays = new JTextField();
-    private final JLabel sssLabel = new JLabel();
-    private final JLabel tinLabel = new JLabel();
-    private final JLabel philHealthLabel = new JLabel();
-    private final JLabel pagIbigLabel = new JLabel();
-    private final JLabel grossPayLabel = new JLabel();
-    private final JLabel deductionsLabel = new JLabel();
-    private final JLabel netPayLabel = new JLabel();
     private final JLabel fullNameLabel = new JLabel();
+    private final JLabel basicPay = new JLabel();
+    private final JLabel overtimePay = new JLabel();
+    private final JLabel holidayPay = new JLabel();
+    private final JLabel tinDeduction = new JLabel();
+    private final JLabel sssDeduction = new JLabel();
+    private final JLabel pagibigDeduction = new JLabel();
+    private final JLabel philHealthDeduction = new JLabel();
+    private final JLabel lateDeduction = new JLabel();
+    private final JLabel baleDeduction = new JLabel();
+    private final JLabel grossPayAmount = new JLabel();
+    private final JLabel deductionsTotalAmount = new JLabel();
+    private final JLabel netPayAmount = new JLabel();
     private double grossPay;
     private double totalGovernmentDeductions;
     private double netPay;
+    private static JComboBox names;
+    private static JComboBox rates;
+    // Hashmap for the list of employees
     HashMap<String, Employee> employeeList = new HashMap<>();
     // Panel for the payroll page that holds all the components
     public JPanel payrollPage() {
+        // Clearing the list before adding the data from the file to avoid duplication
+        employeeList.clear();
+        // Storing the getting all the employees data from the file
+        getEmployeesData();
         JPanel panel = new JPanel();
         panel.setBackground(SECONDARY_BACKGROUND);
         panel.setBounds(0, 0, 800, 600);
         panel.setLayout(null);
         add(panel);
         panel.add(salaryManagementPanel());
-        panel.add(deductionsPanel());
-        panel.add(summaryPanel());
+        panel.add(payslipPanel());
         return panel;
     }
     // Panel for the salary manager
@@ -49,7 +62,7 @@ public class PayrollManager extends JFrame implements Assets {
         add(panel);
         title(panel);
         calculateButton(panel);
-        textField(panel, 40, "Employee Name", employeeName);
+        namesComboBox(panel);
         textField(panel, 90, "Salary Rate", salaryRate);
         textField(panel, 140, "Number of Days Worked", daysWorked);
         textField(panel, 190, "Number of Overtime Hours", hoursOvertime);
@@ -80,9 +93,8 @@ public class PayrollManager extends JFrame implements Assets {
         JButton button = new JButton("Calculate");
         button.setBounds(190, 460, 100, 20);
         button.setBackground(SECONDARY_BACKGROUND);
-
+        // button listener
         button.addActionListener(e -> {
-            getEmployeesData();
             try {
                 // I used ternary operator for less line of codes
                 // Example
@@ -95,102 +107,97 @@ public class PayrollManager extends JFrame implements Assets {
                 double _advancedPay = advancedPay.getText().isEmpty() ? 0 : Double.parseDouble(advancedPay.getText());
                 int _regularHoliday = regularHoliday.getText().isEmpty() ? 0 : Integer.parseInt(regularHoliday.getText());
                 int _specialHoliday = specialHolidays.getText().isEmpty() ? 0 : Integer.parseInt(specialHolidays.getText());
-
-                grossPay = grossPayCalculator(_salaryRate, _daysWorked, _hoursOvertime, _regularHoliday, _specialHoliday, _hoursLate, _advancedPay);
-                totalGovernmentDeductions = governmentDeductionsCalculator(grossPay);
-                netPay = netPayCalculator(grossPay, totalGovernmentDeductions);
-
+                // Earnings calculation
+                double _basicPay = Calculators.basicPay(_daysWorked, _salaryRate);
+                double _overtimePay = Calculators.overtime(_hoursOvertime, _salaryRate);
+                double _holidayPay = Calculators.holidayPay(_regularHoliday, _specialHoliday, _salaryRate);
+                grossPay = Calculators.grossPayCalculator(_basicPay, _overtimePay, _holidayPay);
+                // Deductions calculation
+                double _tinDeduction = Calculators.tinDeduction();
+                double _sssDeduction = Calculators.sssDeduction(grossPay);
+                double _pagIbigDeduction = Calculators.philHealthDeduction();
+                double _philHealthDeduction = Calculators.philHealthDeduction();
+                double _lateDeduction = Calculators.lateDeduction(_hoursLate, _salaryRate);
+                double _baleDeduction = Calculators.baleDeduction(_advancedPay);
+                // Total deductions and net pay calculation
+                totalGovernmentDeductions = Calculators.totalDeductions(_tinDeduction, _pagIbigDeduction, _sssDeduction, _philHealthDeduction, _lateDeduction, _baleDeduction);
+                netPay = Calculators.netPayCalculator(grossPay, totalGovernmentDeductions);
+                // Setting the text for each label in the panel
                 fullNameLabel.setText(employeeName.getText());
-                grossPayLabel.setText(String.valueOf(grossPay));
-                deductionsLabel.setText(String.valueOf(totalGovernmentDeductions));
-                netPayLabel.setText(String.valueOf(netPay));
-
-                String key = employeeName.getText().trim();
-                employeeList.get(key).setTotalDeductions(totalGovernmentDeductions);
-                employeeList.get(key).setGrossPay(grossPay);
-                employeeList.get(key).setNetPay(netPay);
+                basicPay.setText(String.valueOf(_basicPay));
+                overtimePay.setText(String.valueOf(_overtimePay));
+                holidayPay.setText(String.valueOf(_holidayPay));
+                tinDeduction.setText(String.valueOf(_tinDeduction));
+                sssDeduction.setText(String.valueOf(_sssDeduction));
+                pagibigDeduction.setText(String.valueOf(_pagIbigDeduction));
+                philHealthDeduction.setText(String.valueOf(_philHealthDeduction));
+                lateDeduction.setText(String.valueOf(_lateDeduction));
+                baleDeduction.setText(String.valueOf(_baleDeduction));
+                grossPayAmount.setText(String.valueOf(grossPay));
+                deductionsTotalAmount.setText(String.valueOf(totalGovernmentDeductions));
+                netPayAmount.setText(String.valueOf(netPay));
+                // Getting the employee details in the hashmap list and
+                Employee employee = employeeList.get(employeeName.getText().trim());
+                employee.setNetPay(netPay);
+                employee.setGrossPay(grossPay);
+                employee.setTotalDeductions(totalGovernmentDeductions);
+                // Updating the details on the database/file
                 updateDataBaseDetails();
-
             }catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(panel, "Please input a valid number.");
             }
         });
-
         panel.add(button);
     }
     // Deductions Panel
-    public JPanel deductionsPanel() {
+    public JPanel payslipPanel() {
         JPanel panel = new JPanel();
-        panel.setBounds(320, 10, 450, 200);
+        panel.setBounds(320, 10, 450, 500);
         panel.setBackground(PRIMARY_BACKGROUND);
         panel.setBorder(new RoundedBorder(20, Color.BLACK));
-        panel.add(governmentDeductionsLabel());
+        panel.add(companyNameLabel());
         panel.setLayout(null);
-        amountInfoLabel(panel, sssLabel, "SSS:", 10, 60);
-        amountInfoLabel(panel, tinLabel, "TIN:", 35, 55);
-        amountInfoLabel(panel, philHealthLabel, "PHIL HEALTH:", 60, 135);
-        amountInfoLabel(panel, pagIbigLabel, "PAG IBIG", 85, 105);
+        aboutMoney(panel, "EARNINGS", 70);
+        titleAndAmountLabel(panel, fullNameLabel, "Name: ", 10, 20, 70);
+        titleAndAmountLabel(panel, basicPay, "Basic: ", 75, 70, 120);
+        titleAndAmountLabel(panel, overtimePay, "Overtime: ", 95, 70, 150);
+        titleAndAmountLabel(panel, holidayPay, "Holiday: ", 115, 70, 140);
+        titleAndAmountLabel(panel, grossPayAmount, "Gross Pay: ", 225, 70, 155);
+        aboutMoney(panel, "DEDUCTIONS", 250);
+        titleAndAmountLabel(panel, tinDeduction, "TIN: ", 75, 250, 285);
+        titleAndAmountLabel(panel, pagibigDeduction, "PAG-IBIG: ", 95, 250, 330);
+        titleAndAmountLabel(panel, sssDeduction, "SSS: ", 115, 250, 290);
+        titleAndAmountLabel(panel, philHealthDeduction, "PHIL-HEALTH: ", 135, 250, 360);
+        titleAndAmountLabel(panel, lateDeduction, "Late: ", 155, 250, 290);
+        titleAndAmountLabel(panel, baleDeduction, "Bale: ", 175, 250, 290);
+        titleAndAmountLabel(panel, deductionsTotalAmount, "Deductions: ", 225, 250, 345);
+        titleAndAmountLabel(panel, netPayAmount, "Net Pay: ", 265, 250, 320);
+        dateAndTime(panel);
         return panel;
     }
     // h1 for government deductions panel
-    public JLabel governmentDeductionsLabel() {
-        JLabel label = new JLabel("Government Deductions");
-        label.setBounds(20, 20, 300, 20);
+    public JLabel companyNameLabel() {
+        JLabel label = new JLabel("EXL CORPORATION");
+        label.setBounds(20, 25, 300, 20);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         return label;
     }
     // Texts to show the deductions information
-    public void amountInfoLabel(JPanel panel, JLabel amountLabel, String title, int y, int x) {
+    public void titleAndAmountLabel(JPanel panel, JLabel amountLabel, String title, int y, int x, int x1) {
         JLabel label = new JLabel(title);
-        label.setBounds(20, y, 150, 100);
+        label.setBounds(x, y, 150, 100);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         panel.add(label);
-        amountLabel.setBounds(x, y, 300, 100);
+        amountLabel.setBounds(x1, y, 300, 100);
         amountLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         panel.add(amountLabel);
     }
-    // Panel for the summary
-    public JPanel summaryPanel() {
-        JPanel panel = new JPanel();
-        panel.setBounds(320, 220, 450, 290);
-        panel.setBackground(PRIMARY_BACKGROUND);
-        panel.setBorder(new RoundedBorder(20, Color.BLACK));
-        panel.setLayout(null);
-        summaryLabel(panel);
-        amountInfoLabel(panel, fullNameLabel, "FULL NAME:", 10, 120);
-        amountInfoLabel(panel, grossPayLabel, "GROSS PAY:", 35, 120);
-        amountInfoLabel(panel, deductionsLabel, "DEDUCTIONS:", 60, 130);
-        amountInfoLabel(panel, netPayLabel, "NET PAY:", 85, 95);
-        return panel;
-    }
-    // label for summary
-    public void summaryLabel(JPanel panel) {
-        JLabel label = new JLabel("SUMMARY");
-        label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
-        label.setBounds(20, 20, 300, 20);
+    // EARNING/DEDUCTIONS LABEL
+    public void aboutMoney(JPanel panel, String title, int x) {
+        JLabel label = new JLabel(title);
+        label.setBounds(x, 85, 300, 15);
+        label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         panel.add(label);
-    }
-    // Functions to be used
-    public double grossPayCalculator(double salaryRate, int daysWorked, int hoursOvertime, int regularHolidays, int specialHolidays, int hoursLate, double advancedPay) {
-        // Additions
-        double regularPay = salaryRate * daysWorked;
-        double overtimePay = hoursOvertime * ((salaryRate / 8) * 1.1);
-        double regularHolidayPay = (salaryRate + (salaryRate * 0.3)) * regularHolidays;
-        double specialHolidayPay = salaryRate * specialHolidays;
-        // deduction
-        double lateDeduction = (salaryRate / 8) * hoursLate;
-        return regularPay + overtimePay + regularHolidayPay + specialHolidayPay - lateDeduction - advancedPay;
-    }
-    // Function to calculate the government deductions
-    public double governmentDeductionsCalculator(double grossPay) {
-        double TIN = 0;
-        double SSS = grossPay * 0.1;
-        double PHIL_HEALTH = 100;
-        double PAG_IBIG = 100;
-        return TIN + SSS + PHIL_HEALTH + PAG_IBIG;
-    }
-    public double netPayCalculator(double grossPay, double deductions) {
-        return grossPay - deductions;
     }
     // This line will get all the data from the file/database
     public void getEmployeesData () {
@@ -211,7 +218,7 @@ public class PayrollManager extends JFrame implements Assets {
             }
             reader.close();
         }catch (FileNotFoundException e) {
-            System.out.println("error");
+            System.out.println("File not found!");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -225,7 +232,6 @@ public class PayrollManager extends JFrame implements Assets {
             // Format
             // Name | Phone Number | Position | SSS | TIN | PHIL-HEALTH | PAG_IBIG | GROSS PAY | TOTAL DEDUCTIONS | NET PAY
             for(Map.Entry<String, Employee> in : employeeList.entrySet()) {
-                System.out.println(in.getKey());
                 file.write(in.getValue().getFullName() + " | " +
                         in.getValue().getPhoneNumber() + " | " +
                         in.getValue().getPosition() + " | " +
@@ -243,11 +249,43 @@ public class PayrollManager extends JFrame implements Assets {
             System.out.println(e.getMessage());
         }
     }
+    // this is for the name combo box
+    void namesComboBox(JPanel panel) {
+        names = new JComboBox(getAllNames());
+        names.setBounds(10, 40, 280, 30);
+        names.addActionListener(this);
+        panel.add(names);
+    }
     // This function displays the current time and date
-    public void dateAndTime() {
+    void dateAndTime(JPanel panel) {
         // Creating an instance of the object DateTimeFormatter and passing an argument for the format of the time and date
         DateTimeFormatter currDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         // Getting the current time and date
         LocalDateTime now = LocalDateTime.now();
+        // Displaying the time and date:)
+        JLabel label = new JLabel(currDate.format(now));
+        label.setBounds(340, 10, 200, 10);
+        label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 10));
+        panel.add(label);
+    }
+    // Function to get all the names from the employee list
+    public String[] getAllNames() {
+        // Array for all the names
+        String[] employeesName = new String[employeeList.size()];
+        // Setting the initial index to 1
+        int index = 0;
+        // For each employee I will get the key from it and store in the array
+        for(Map.Entry<String, Employee> in : employeeList.entrySet()) {
+            employeesName[index] = in.getKey();
+            // increasing the index by one each loop
+            index++;
+        }
+        return employeesName;
+    }
+    // Event listener for the combo box
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==names)
+            employeeName.setText((String) names.getSelectedItem());
     }
 }
