@@ -16,6 +16,10 @@ public interface Calculators {
         double specialHolidayPay = salaryRate * specialHoliday;
         return regularHolidayPay + specialHolidayPay;
     }
+    // SSS 0.02
+    // Phil health 0.04
+    // Pag ibig 0.02
+    // tin 0.05
     static double lateDeduction(int hoursLate, double salaryRate) {
         return (salaryRate / 8) * hoursLate;
     }
@@ -26,7 +30,7 @@ public interface Calculators {
         return 0;
     }
     static double pagibigDeduction() {
-        return 100;
+        return 200;
     }
     static double philHealthDeduction() {
         return 100;

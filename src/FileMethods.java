@@ -1,8 +1,11 @@
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface FileMethods {
+    // List of employees
+    HashMap<String, Employee> employeesDetail = new HashMap<>();
     static void updateData(HashMap<String, Employee> list) {
         try {
             // Creating an instance of the object BufferedWriter and putting the file path as an argument
@@ -51,5 +54,19 @@ public interface FileMethods {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    static String[] getAllNames(Map<String, Employee> employeeList) {
+        // Array for all the names
+        String[] employeesName = new String[employeeList.size()];
+        // Setting the initial index to 1
+        int index = 0;
+        // For each employee I will get the key from it and store in the array
+        for(Map.Entry<String, Employee> in : employeeList.entrySet()) {
+            employeesName[index] = in.getKey();
+            // increasing the index by one each loop
+            index++;
+        }
+        return employeesName;
     }
 }

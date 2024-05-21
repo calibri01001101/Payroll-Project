@@ -10,11 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class PayrollList extends JFrame implements Assets {
-    // List for the employees
-    ArrayList<Employee> employees  = new ArrayList<>();
     public JPanel payrollList() {
         JPanel panel = new JPanel();
-        panel.setBackground(SECONDARY_BACKGROUND);
+        panel.setBackground(WHITE);
         panel.setBounds(0, 0, 800, 600);
         panel.setLayout(null);
         add(panel);

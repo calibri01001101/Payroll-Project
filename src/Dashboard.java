@@ -2,7 +2,6 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,36 +9,46 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Dashboard extends JFrame implements Assets, FileMethods{
-    private int totalEmployees;
-    private double totalDeductions;
-    private double totalGrossPay;
-    private double totalNetPay;
-    // List for the employees detail
-    private final HashMap<String, Employee> employeesDetail = new HashMap<>();
     // Panel for the dashboard page that holds all the components
     // This dashboard page contains the summary of all the amounts and all the employee's details,
     public JPanel dashboardPage() {
-        divInformation();
-        JPanel panel = new JPanel();
-        panel.setBackground(SECONDARY_BACKGROUND);
-        panel.setBounds(0, 0, 800, 600);
-        panel.setLayout(null);
-        add(panel);
-        panel.add(amountBox(20, "Total Employees", String.valueOf(totalEmployees)));
-        panel.add(amountBox(210, "Total Net Pay", String.valueOf(totalNetPay)));
-        panel.add(amountBox(400, "Total Gross Pay", String.valueOf(totalGrossPay)));
-        panel.add(amountBox(590, "Total Deductions", String.valueOf(totalDeductions)));
-        panel.add(tablePanel());
-        return panel;
+        // To get all the employees from the file to be able to get the size of it
+        FileMethods.getData(FileMethods.employeesDetail);
+        // This panel is the panel for the whole dashboard page
+        JPanel dashboardPanel = new JPanel();
+        dashboardPanel.setBackground(WHITE);
+        dashboardPanel.setBounds(0, 0, 800, 600);
+        dashboardPanel.setLayout(null);
+        // To add this panel on the main container which is the main frame
+        add(dashboardPanel);
+        // To add a summary box for the total of employees
+        dashboardPanel.add(summaryBox(590, "Total Employees", String.valueOf(FileMethods.employeesDetail.size())));
+        // This is the table in the container
+        dashboardPanel.add(tablePanel());
+        // This is just the h1 in the dashboard page
+        companyNameLabel(dashboardPanel);
+        return dashboardPanel;
     }
 
-    public JPanel amountBox(int x, String title, String amount) {
+    public void companyNameLabel(JPanel panel) {
+        JLabel label = new JLabel("MAKTRANS CORPORATION");
+        label.setBounds(20, 10, 500, 100);
+        label.setForeground(PRIMARY_BACKGROUND);
+        label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 35));
+        JLabel label2 = new JLabel("Payroll System");
+        label2.setBounds(20, 40, 500, 100);
+        label2.setForeground(PRIMARY_BACKGROUND);
+        label2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        panel.add(label2);
+        panel.add(label);
+    }
+
+    public JPanel summaryBox(int x, String title, String amount) {
         // Panel that holds the Heading and subheading or the amount of money and the text above it
         JPanel panel = new JPanel();
-        panel.setBackground(Color.BLACK);
+        panel.setBackground(PRIMARY_BACKGROUND);
         panel.setBounds(x, 20, 180, 100);
         Border roundedBorder = new RoundedBorder(20, PRIMARY_BACKGROUND);
         panel.setBorder(roundedBorder);
@@ -55,11 +64,10 @@ public class Dashboard extends JFrame implements Assets, FileMethods{
         subHeading.setForeground(SECONDARY_BACKGROUND);
         subHeading.setFont(new Font(subHeading.getFont().getName(), Font.BOLD, 25));
         subHeading.setBounds(10, 30, 180, 25);
+        subHeading.setForeground(WHITE);
         panel.add(subHeading);
-
         return panel;
     }
-
 
     public JPanel tablePanel() {
         JPanel panel = new JPanel();
@@ -103,28 +111,13 @@ public class Dashboard extends JFrame implements Assets, FileMethods{
         // converting the array list to 2D array and returning it
         return dataList.toArray(new String[0][]);
     }
-    // This function fill out the information for the four boxes
-    public void divInformation() {
-        // Getting all the data first from the file
-        FileMethods.getData(employeesDetail);
-        // Getting the size of the array and initialized the value of total employees
-        totalEmployees = employeesDetail.size();
-        // Looping for each data in the hash map
-        for(Map.Entry<String, Employee> employee : employeesDetail.entrySet()) {
-            // Getting the deduction from an employee and adding it on total deductions
-            totalDeductions += employee.getValue().getTotalDeductions();
-            // Getting the net pay from an employee and adding it on total net pay
-            totalNetPay += employee.getValue().getNetPay();
-            // Getting the gross pay from an employee and adding it on total gross pay
-            totalGrossPay += employee.getValue().getGrossPay();
-        }
-    }
+    // this is the code for the color of the rows
     private void setCustomRowColors(JTable table) {
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                c.setBackground(row % 2 == 0 ? PRIMARY_BACKGROUND : SECONDARY_BACKGROUND);
+                c.setBackground(row % 2 == 0 ? WHITE : SECONDARY_BACKGROUND);
                 return c;
             }
         });

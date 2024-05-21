@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     private double totalGovernmentDeductions;
     private double netPay;
     private static JComboBox names;
+    private final DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
     // Hashmap for the list of employees
     HashMap<String, Employee> employeeList = new HashMap<>();
     // Panel for the payroll page that holds all the components
@@ -40,7 +42,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
         // Storing the getting all the employees data from the file
         FileMethods.getData(employeeList);
         JPanel panel = new JPanel();
-        panel.setBackground(SECONDARY_BACKGROUND);
+        panel.setBackground(WHITE);
         panel.setBounds(0, 0, 800, 600);
         panel.setLayout(null);
         add(panel);
@@ -72,6 +74,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     public void title(JPanel panel) {
         JLabel label = new JLabel("SALARY MANAGER");
         label.setBounds(10, 10, 290, 20);
+        label.setForeground(WHITE);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         panel.add(label);
     }
@@ -79,6 +82,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     public void textField(JPanel panel, int y, String title, JTextField value) {
         JLabel label = new JLabel(title);
         label.setBounds(10, y + 20, 250, 30);
+        label.setForeground(WHITE);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         panel.add(label);
         value.setBounds(10, y, 280, 30);
@@ -88,6 +92,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     public void calculateButton(JPanel panel) {
         JButton button = new JButton("Calculate");
         button.setBounds(190, 460, 100, 20);
+        button.setForeground(WHITE);
         button.setBackground(SECONDARY_BACKGROUND);
         // button listener
         button.addActionListener(e -> {
@@ -111,7 +116,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
                 // Deductions calculation
                 double _tinDeduction = Calculators.tinDeduction();
                 double _sssDeduction = Calculators.sssDeduction(grossPay);
-                double _pagIbigDeduction = Calculators.philHealthDeduction();
+                double _pagIbigDeduction = Calculators.pagibigDeduction();
                 double _philHealthDeduction = Calculators.philHealthDeduction();
                 double _lateDeduction = Calculators.lateDeduction(_hoursLate, _salaryRate);
                 double _baleDeduction = Calculators.baleDeduction(_advancedPay);
@@ -120,18 +125,18 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
                 netPay = Calculators.netPayCalculator(grossPay, totalGovernmentDeductions);
                 // Setting the text for each label in the panel
                 fullNameLabel.setText(employeeName.getText());
-                basicPay.setText(String.valueOf(_basicPay));
-                overtimePay.setText(String.valueOf(_overtimePay));
-                holidayPay.setText(String.valueOf(_holidayPay));
-                tinDeduction.setText(String.valueOf(_tinDeduction));
-                sssDeduction.setText(String.valueOf(_sssDeduction));
-                pagibigDeduction.setText(String.valueOf(_pagIbigDeduction));
-                philHealthDeduction.setText(String.valueOf(_philHealthDeduction));
-                lateDeduction.setText(String.valueOf(_lateDeduction));
-                baleDeduction.setText(String.valueOf(_baleDeduction));
-                grossPayAmount.setText(String.valueOf(grossPay));
-                deductionsTotalAmount.setText(String.valueOf(totalGovernmentDeductions));
-                netPayAmount.setText(String.valueOf(netPay));
+                basicPay.setText(numberFormatter(_basicPay));
+                overtimePay.setText(numberFormatter(_overtimePay));
+                holidayPay.setText(numberFormatter(_holidayPay));
+                tinDeduction.setText(numberFormatter(_tinDeduction));
+                sssDeduction.setText(numberFormatter(_sssDeduction));
+                pagibigDeduction.setText(numberFormatter(_pagIbigDeduction));
+                philHealthDeduction.setText(numberFormatter(_philHealthDeduction));
+                lateDeduction.setText(numberFormatter(_lateDeduction));
+                baleDeduction.setText(numberFormatter(_baleDeduction));
+                grossPayAmount.setText(numberFormatter(grossPay));
+                deductionsTotalAmount.setText(numberFormatter(grossPay));
+                netPayAmount.setText(numberFormatter(netPay));
                 // Getting the employee details in the hashmap list and
                 Employee employee = employeeList.get(employeeName.getText().trim());
                 employee.setNetPay(netPay);
@@ -169,12 +174,14 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
         titleAndAmountLabel(panel, deductionsTotalAmount, "Deductions: ", 225, 250, 345);
         titleAndAmountLabel(panel, netPayAmount, "Net Pay: ", 265, 250, 320);
         dateAndTime(panel);
+        printButton(panel);
         return panel;
     }
     // h1 for government deductions panel
     public JLabel companyNameLabel() {
         JLabel label = new JLabel("EXL CORPORATION");
         label.setBounds(20, 25, 300, 20);
+        label.setForeground(WHITE);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         return label;
     }
@@ -184,14 +191,17 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
         label.setBounds(x, y, 150, 100);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         panel.add(label);
+        label.setForeground(WHITE);
         amountLabel.setBounds(x1, y, 300, 100);
         amountLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
+        amountLabel.setForeground(WHITE);
         panel.add(amountLabel);
     }
     // EARNING/DEDUCTIONS LABEL
     public void aboutMoney(JPanel panel, String title, int x) {
         JLabel label = new JLabel(title);
         label.setBounds(x, 85, 300, 15);
+        label.setForeground(WHITE);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         panel.add(label);
     }
@@ -211,6 +221,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
         // Displaying the time and date:)
         JLabel label = new JLabel(currDate.format(now));
         label.setBounds(340, 10, 200, 10);
+        label.setForeground(WHITE);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 10));
         panel.add(label);
     }
@@ -227,6 +238,19 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
             index++;
         }
         return employeesName;
+    }
+    //print button for payslip
+    public void printButton(JPanel panel) {
+        JButton button = new JButton("Print");
+        button.setBackground(SECONDARY_BACKGROUND);
+        button.setForeground(WHITE);
+        button.setBounds(350, 440, 80, 40);
+        panel.add(button);
+    }
+
+
+    public String numberFormatter(Double amount) {
+        return decimalFormat.format(amount);
     }
     // Event listener for the combo box
     @Override

@@ -47,7 +47,7 @@ public class MainFrame extends JFrame implements Assets {
         add(panel);
         // Creating an instance of the sidebar button/texts
         sideBarButton(panel, "Dashboard", 40);
-        sideBarButton(panel, "Add Employee", 70);
+        sideBarButton(panel, "Manage Employees", 70);
         sideBarButton(panel, "Payroll Manager", 100);
         sideBarButton(panel, "Payroll List", 130);
 
@@ -56,7 +56,7 @@ public class MainFrame extends JFrame implements Assets {
     // Sidebar label selection
     public void sideBarButton(JPanel panel, String title, int y) {
         JLabel label = new JLabel(title);
-        label.setForeground(HEADING_COLOR);
+        label.setForeground(WHITE);
         label.setBounds(20, y, 200, 25);
         label.setFont(new Font(label.getFont().getName(), Font.BOLD, 18));
 
@@ -65,8 +65,8 @@ public class MainFrame extends JFrame implements Assets {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if(label.getText().equals("Add Employee")) {
-                    AddEmployee addEmployeePage = new AddEmployee();
+                if(label.getText().equals("Manage Employees")) {
+                    ManageEmployees addEmployeePage = new ManageEmployees();
                     // Removing the current layered pane
                     layeredPane.removeAll();
                     // adding the pane that is clicked
