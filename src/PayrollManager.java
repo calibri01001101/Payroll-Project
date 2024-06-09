@@ -5,10 +5,9 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 
-public class PayrollManager extends JFrame implements Assets, Calculators, ActionListener, FileMethods {
+public class PayrollManager extends JFrame implements Assets, Calculators, ActionListener {
     private final JTextField employeeName = new JTextField();
     private final JTextField salaryRate = new JTextField("560");
     private final JTextField daysWorked = new JTextField();
@@ -34,13 +33,13 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     private double totalGovernmentDeductions;
     private double netPay;
     private static JComboBox names;
+    JTextArea payslipTextArea = new JTextArea();
     private final DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
     // Hashmap for the list of employees
-    HashMap<String, Employee> employeeList = new HashMap<>();
+    Map<String, Employee> employeeList = FileFunctions.get();
     // Panel for the payroll page that holds all the components
     public JPanel payrollPage() {
         // Storing the getting all the employees data from the file
-        FileMethods.getData(employeeList);
         JPanel panel = new JPanel();
         panel.setBackground(WHITE);
         panel.setBounds(0, 0, 800, 600);
@@ -95,7 +94,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
         button.setForeground(WHITE);
         button.setBackground(SECONDARY_BACKGROUND);
         // button listener
-        button.addActionListener(e -> {
+        button.addActionListener(_ -> {
             try {
                 // I used ternary operator for less line of codes
                 // Example
@@ -135,48 +134,66 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
                 lateDeduction.setText(numberFormatter(_lateDeduction));
                 baleDeduction.setText(numberFormatter(_baleDeduction));
                 grossPayAmount.setText(numberFormatter(grossPay));
-                deductionsTotalAmount.setText(numberFormatter(grossPay));
+                deductionsTotalAmount.setText(numberFormatter(totalGovernmentDeductions));
                 netPayAmount.setText(numberFormatter(netPay));
                 // Getting the employee details in the hashmap list and
                 Employee employee = employeeList.get(employeeName.getText().trim());
                 employee.setNetPay(netPay);
                 employee.setGrossPay(grossPay);
                 employee.setTotalDeductions(totalGovernmentDeductions);
-                // Updating the details on the database/file
-                FileMethods.updateData(employeeList);
+
+                // Updating the JTextArea with the new payslip information
+                updatePayslipTextArea();
+                FileFunctions.update(employee.getFullName(), employee);
             }catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(panel, "Please input a valid number.");
             }
         });
         panel.add(button);
     }
-    // Deductions Panel
-    public JPanel payslipPanel() {
-        JPanel panel = new JPanel();
-        panel.setBounds(320, 10, 450, 500);
-        panel.setBackground(PRIMARY_BACKGROUND);
-        panel.setBorder(new RoundedBorder(20, Color.BLACK));
-        panel.add(companyNameLabel());
-        panel.setLayout(null);
-        aboutMoney(panel, "EARNINGS", 70);
-        titleAndAmountLabel(panel, fullNameLabel, "Name: ", 10, 20, 70);
-        titleAndAmountLabel(panel, basicPay, "Basic: ", 75, 70, 120);
-        titleAndAmountLabel(panel, overtimePay, "Overtime: ", 95, 70, 150);
-        titleAndAmountLabel(panel, holidayPay, "Holiday: ", 115, 70, 140);
-        titleAndAmountLabel(panel, grossPayAmount, "Gross Pay: ", 225, 70, 155);
-        aboutMoney(panel, "DEDUCTIONS", 250);
-        titleAndAmountLabel(panel, tinDeduction, "TIN: ", 75, 250, 285);
-        titleAndAmountLabel(panel, pagibigDeduction, "PAG-IBIG: ", 95, 250, 330);
-        titleAndAmountLabel(panel, sssDeduction, "SSS: ", 115, 250, 290);
-        titleAndAmountLabel(panel, philHealthDeduction, "PHIL-HEALTH: ", 135, 250, 360);
-        titleAndAmountLabel(panel, lateDeduction, "Late: ", 155, 250, 290);
-        titleAndAmountLabel(panel, baleDeduction, "Bale: ", 175, 250, 290);
-        titleAndAmountLabel(panel, deductionsTotalAmount, "Deductions: ", 225, 250, 345);
-        titleAndAmountLabel(panel, netPayAmount, "Net Pay: ", 265, 250, 320);
-        dateAndTime(panel);
-        printButton(panel);
-        return panel;
+
+    public JTextArea payslipPanel() {
+        payslipTextArea = new JTextArea();
+        payslipTextArea.setBounds(320, 10, 450, 500);
+        payslipTextArea.setBorder(new RoundedBorder(20, Color.BLACK));
+        payslipTextArea.setLayout(null);
+        printButton(payslipTextArea);
+        return payslipTextArea;
     }
+
+    // Deductions Panel
+    public void updatePayslipTextArea() {
+
+        String payslipText = "========================================================\n" +
+                "MAKTRANS CORPORATION\n" +
+                "========================================================\n" +
+                "Employee name: " + employeeName.getText() + "\n" +
+                "Salary Rate: " + salaryRate.getText() + "\n" +
+                "--------------------------------------------------------\n" +
+                "Earnings\n" +
+                "--------------------------------------------------------\n" +
+                "Basic Pay: " + basicPay.getText() + "\n" +
+                "Overtime Pay: " + overtimePay.getText() + "\n" +
+                "Holiday Pay: " + holidayPay.getText() + "\n" +
+                "--------------------------------------------------------\n" +
+                "Deductions\n" +
+                "--------------------------------------------------------\n" +
+                "TIN Deduction: " + tinDeduction.getText() + "\n" +
+                "SSS Deduction: " + sssDeduction.getText() + "\n" +
+                "Pag-ibig Deduction: " + pagibigDeduction.getText() + "\n" +
+                "PhilHealth Deduction: " + philHealthDeduction.getText() + "\n" +
+                "Late Deduction: " + lateDeduction.getText() + "\n" +
+                "Bale Deduction: " + baleDeduction.getText() + "\n" +
+                "--------------------------------------------------------\n" +
+                "Gross Pay: " + grossPayAmount.getText() + "\n" +
+                "Total Deductions: " + deductionsTotalAmount.getText() + "\n" +
+                "Net Pay: " + netPayAmount.getText() + "\n" +
+                "========================================================";
+
+        payslipTextArea.setText(payslipText);
+        payslipTextArea.setEditable(false);
+    }
+
     // h1 for government deductions panel
     public JLabel companyNameLabel() {
         JLabel label = new JLabel("EXL CORPORATION");
@@ -213,7 +230,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
         panel.add(names);
     }
     // This function displays the current time and date
-    void dateAndTime(JPanel panel) {
+    JLabel dateAndTime() {
         // Creating an instance of the object DateTimeFormatter and passing an argument for the format of the time and date
         DateTimeFormatter currDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         // Getting the current time and date
@@ -223,28 +240,31 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
         label.setBounds(340, 10, 200, 10);
         label.setForeground(WHITE);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 10));
-        panel.add(label);
+        return label;
     }
-    // Function to get all the names from the employee list
+
     public String[] getAllNames() {
-        // Array for all the names
         String[] employeesName = new String[employeeList.size()];
-        // Setting the initial index to 1
         int index = 0;
-        // For each employee I will get the key from it and store in the array
         for(Map.Entry<String, Employee> in : employeeList.entrySet()) {
             employeesName[index] = in.getKey();
-            // increasing the index by one each loop
             index++;
         }
         return employeesName;
     }
     //print button for payslip
-    public void printButton(JPanel panel) {
+    public void printButton(JTextArea panel) {
         JButton button = new JButton("Print");
         button.setBackground(SECONDARY_BACKGROUND);
         button.setForeground(WHITE);
         button.setBounds(350, 440, 80, 40);
+        button.addActionListener(e -> {
+            try {
+                panel.print();
+            }catch(Exception er) {
+                System.out.println(er.getMessage());
+            }
+        });
         panel.add(button);
     }
 

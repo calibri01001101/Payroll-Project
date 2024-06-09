@@ -2,13 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.File;
 import java.util.HashMap;
 import java.util.InputMismatchException;
+import java.util.Map;
 
-public class ManageEmployees extends JFrame implements Assets, FileMethods, ActionListener {
+public class ManageEmployees extends JFrame implements Assets, ActionListener {
     private final JTextField lastName = new JTextField();
     private final JTextField firstName = new JTextField();
     private final JTextField middleInitial = new JTextField();
@@ -27,13 +26,12 @@ public class ManageEmployees extends JFrame implements Assets, FileMethods, Acti
     private String employeeFullName;
     JPanel personalInformationPanel;
     JPanel addEmployeePanel;
-    HashMap<String, Employee> employeeList = new HashMap<>();
+    HashMap<String, Employee> employeeList = FileFunctions.get();
     private static JComboBox names;
     private Employee currentEmployee;
 
     // Panel for the employee page that holds all the components
     public JPanel addEmployeePage() {
-        FileMethods.getData(employeeList);
         addEmployeePanel = new JPanel();
         addEmployeePanel.setBackground(WHITE);
         addEmployeePanel.setBounds(0, 0, 800, 600);
@@ -87,9 +85,7 @@ public class ManageEmployees extends JFrame implements Assets, FileMethods, Acti
         button.setBounds(190, 490, 100, 20);
         button.setBackground(SECONDARY_BACKGROUND);
         button.setForeground(WHITE);
-        button.addActionListener(e -> {
-            addNewEmployee();
-        });
+        button.addActionListener(_ -> addNewEmployee());
         panel.add(button);
     }
     // Function to empty text fields after adding an employee
@@ -142,10 +138,7 @@ public class ManageEmployees extends JFrame implements Assets, FileMethods, Acti
         removeEmployee.setForeground(Color.WHITE);
         removeEmployee.setBackground(Color.RED);
         removeEmployee.setBounds(210, 460, 100, 40);
-        removeEmployee.addActionListener(e -> {
-            employeeList.remove(employeeFullName);
-            FileMethods.updateData(employeeList);
-        });
+        removeEmployee.addActionListener(_ -> FileFunctions.delete(employeeFullName));
         panel.add(removeEmployee);
     }
 
@@ -162,11 +155,22 @@ public class ManageEmployees extends JFrame implements Assets, FileMethods, Acti
 
 
     public void employeesNameComboBox(JPanel panel) {
-        names = new JComboBox(FileMethods.getAllNames(employeeList));
+        names = new JComboBox(getEmployeesName());
         names.setBounds(10, 50, 280, 30);
         names.addActionListener(this);
         panel.add(names);
 
+    }
+
+    public String[] getEmployeesName(){
+        Map<String, Employee> employeesHashMap = FileFunctions.get();
+        String[] employees = new String[employeesHashMap.size()];
+        int index = 0;
+        for(Map.Entry<String, Employee> employee : employeesHashMap.entrySet()) {
+            employees[index] =  employee.getKey();
+            index++;
+        }
+        return employees;
     }
 
     public void modifyAndSaveChanges() {
@@ -177,7 +181,7 @@ public class ManageEmployees extends JFrame implements Assets, FileMethods, Acti
             currentEmployee.setTin(editTIN.getText().trim());
             currentEmployee.setPhilHeath(editPHILHEALTH.getText().trim());
             currentEmployee.setPagIbig(editPAGIBIG.getText().trim());
-            FileMethods.updateData(employeeList);
+            FileFunctions.update(employeeFullName, employeeList.get(employeeFullName));
         }catch(NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Please enter a valid position");
         }
@@ -187,43 +191,30 @@ public class ManageEmployees extends JFrame implements Assets, FileMethods, Acti
     // function for adding a new employee
     public void addNewEmployee() {
         try {
-            // Object for writing a data to a file
-            BufferedWriter writer = new BufferedWriter(new FileWriter("employees_details", true));
             // Setting the value of the variable by getting the value of the text field
             String last_name = lastName.getText().trim();
             String first_name = firstName.getText().trim();
             String middle_initial = middleInitial.getText().trim();
-            String fullName = first_name.concat(" " + middle_initial).concat(" " + last_name);
+            String fullName = first_name.concat(STR." \{middle_initial}").concat(STR." \{last_name}");
             String phone_number = phoneNumber.getText().trim();
-            String _address = position.getText().trim();
+            String _position = position.getText().trim();
             // I used ternary operator here so if the value of the text field is empty it will show unknown
             String sssNumber = sss.getText().trim().isEmpty() ? "unknown" : sss.getText().trim();
             String tinNumber = tin.getText().trim().isEmpty() ? "unknown" : tin.getText().trim();
             String philHealthNumber = philHealth.getText().trim().isEmpty() ? "unknown" : philHealth.getText().trim();
             String pagIbigNumber = pagIbig.getText().trim().trim().isEmpty() ? "unknown" : pagIbig.getText().trim();
-            // Checking if the value of full name, phone number and address is set.
-            if(!last_name.isEmpty() && !phone_number.isEmpty() && !_address.isEmpty()) {
-                writer.write(fullName + "|" +
-                        phone_number + "|" +
-                        _address + "|" +
-                        sssNumber + "|" +
-                        tinNumber + "|" +
-                        philHealthNumber + "|" +
-                        pagIbigNumber + "|" +
-                        "0" + "|" +
-                        "0" + "|" +
-                        "0" + "\n"
-                );
-                emptyTextField();
-                writer.close();
+            // Checking if the value of full name, phone number and position is set.
+            if(!last_name.isEmpty() && !phone_number.isEmpty() && !_position.isEmpty()) {
+                Employee employee = new Employee(fullName, phone_number, _position, sssNumber, tinNumber, philHealthNumber, pagIbigNumber, 0, 0 ,0);
+                FileFunctions.create("employees_details", employee);
                 JOptionPane.showMessageDialog(addEmployeePage(), "Added successfully.");
                 return;
             }
+
             // If important information is empty this will show
             JOptionPane.showMessageDialog(addEmployeePage(), "Full Name, Phone Number and Position can't be empty.");
 
-            writer.close();
-        } catch (InputMismatchException | IOException el) {
+        } catch (InputMismatchException e) {
             JOptionPane.showMessageDialog(addEmployeePage(), "Invalid input. Please try again.");
         }
     }

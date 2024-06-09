@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class PayrollList extends JFrame implements Assets {
     public JPanel payrollList() {
@@ -34,9 +35,9 @@ public class PayrollList extends JFrame implements Assets {
         JTable table = new JTable(model);
         table.setRowHeight(20);
         table.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        customizeRow(table);
-        JScrollPane scrollPane = new JScrollPane(table);
 
+        JScrollPane scrollPane = new JScrollPane(table);
+        customizeRow(table);
         panel.add(scrollPane, BorderLayout.CENTER);
         employeesList();
 
@@ -45,28 +46,23 @@ public class PayrollList extends JFrame implements Assets {
     }
     // Function to get the employees from a file
     public String[][] employeesList() {
-        // Creating an array list of employees
-        ArrayList<Employee> employees  = new ArrayList<>();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("employees_details"));
-            String line;
-            while((line = reader.readLine()) != null) {
-                String[] data = line.split("\\|");
-                // Putting an object of employee inside the arraylist
-                employees.add(new Employee(data[0], data[1], data[2], data[3], data[4], data[5], data[6], Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9])));
-            }
-        }catch (FileNotFoundException e) {
-            e.getLocalizedMessage();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        // get all the employees
+        Map<String, Employee> employeesHashMap = FileFunctions.get();
+        // store into a 2d array
+        String[][] employeesArray = new String[employeesHashMap.size()][];
+        int index = 0;
+        for(Map.Entry<String, Employee> employee : employeesHashMap.entrySet()) {
+            employeesArray[index] = new String[]{
+                    employee.getValue().getFullName(),
+                    employee.getValue().getPosition(),
+                    String.valueOf(employee.getValue().getGrossPay()),
+                    String.valueOf(employee.getValue().getTotalDeductions()),
+                    String.valueOf(employee.getValue().getNetPay())
+            };
+            index++;
         }
-        // Converting the arraylist to a 2D array
-        String[][] employeeArray = new String[employees.size()][];
-        for (int i = 0; i < employees.size(); i++) {
-            Employee emp = employees.get(i);
-            employeeArray[i] = new String[]{emp.getFullName(), emp.getPosition(), String.valueOf(emp.getGrossPay()), String.valueOf(emp.getTotalDeductions()), String.valueOf(emp.getNetPay())};
-        }
-        return employeeArray;
+
+        return employeesArray;
     }
 
     private void customizeRow(JTable table) {

@@ -102,4 +102,19 @@ public class Employee {
     public void setPagIbig(String pagIbig) {
         this.pagIbig = pagIbig;
     }
+
+    public String[] toArray() {
+        return new String[] {
+                fullName,
+                phoneNumber,
+                position,
+                sss,
+                tin,
+                philHeath,
+                pagIbig,
+                String.valueOf(grossPay),
+                String.valueOf(totalDeductions),
+                String.valueOf(netPay)
+        };
+    }
 }

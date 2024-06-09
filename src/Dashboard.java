@@ -6,16 +6,13 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
 
-public class Dashboard extends JFrame implements Assets, FileMethods{
+public class Dashboard extends JFrame implements Assets{
     // Panel for the dashboard page that holds all the components
     // This dashboard page contains the summary of all the amounts and all the employee's details,
     public JPanel dashboardPage() {
-        // To get all the employees from the file to be able to get the size of it
-        FileMethods.getData(FileMethods.employeesDetail);
         // This panel is the panel for the whole dashboard page
         JPanel dashboardPanel = new JPanel();
         dashboardPanel.setBackground(WHITE);
@@ -24,7 +21,7 @@ public class Dashboard extends JFrame implements Assets, FileMethods{
         // To add this panel on the main container which is the main frame
         add(dashboardPanel);
         // To add a summary box for the total of employees
-        dashboardPanel.add(summaryBox(590, "Total Employees", String.valueOf(FileMethods.employeesDetail.size())));
+        dashboardPanel.add(summaryBox(590, "Total Employees", String.valueOf(FileFunctions.get().size())));
         // This is the table in the container
         dashboardPanel.add(tablePanel());
         // This is just the h1 in the dashboard page
@@ -75,7 +72,7 @@ public class Dashboard extends JFrame implements Assets, FileMethods{
         panel.setBackground(PRIMARY_BACKGROUND);
         panel.setLayout(new BorderLayout());
 
-        String[][] data = getAllData("employees_details");
+        String[][] data = employeesData("employees_details");
         Object[] columns = {"Full Name", "Phone Number", "Position"};
         DefaultTableModel model = new DefaultTableModel(data, columns);
 
@@ -91,26 +88,15 @@ public class Dashboard extends JFrame implements Assets, FileMethods{
         return panel;
 
     }
-    // Function to get all the information from the text file and returning 2D array
-    public String[][] getAllData(String fileLocation) {
-        // List of data from the file
-        List<String[]> dataList = new ArrayList<>();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileLocation));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // Creating an array of data using the function .split()
-                String[] data = line.split("\\|");
-                // Adding the data on the list
-                dataList.add(data);
-            }
-            reader.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+    public String[][] employeesData(String fileLocation) {
+        Map<String, Employee> employeesHashMap = FileFunctions.get();
+        List<String[]> employeesList = new ArrayList<>();
+        for(Map.Entry<String, Employee> employee : employeesHashMap.entrySet()) {
+            employeesList.add(employee.getValue().toArray());
         }
-        // converting the array list to 2D array and returning it
-        return dataList.toArray(new String[0][]);
+        return employeesList.toArray(new String[0][]);
     }
+
     // this is the code for the color of the rows
     private void setCustomRowColors(JTable table) {
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
