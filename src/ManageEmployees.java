@@ -142,12 +142,12 @@ public class ManageEmployees extends JFrame implements ActionListener {
         removeEmployee.setBounds(210, 460, 100, 40);
         removeEmployee.addActionListener(_ -> {
             if(employeeFullName == null) {
-                JOptionPane.showMessageDialog(this, "Please select an employee first.");
+                Validator.forbidden(this, "Please select an employee first.");
                 return;
             }
 
             FileFunctions.delete(employeeFullName);
-            JOptionPane.showMessageDialog(this, "Deleted Successfully.");
+            Validator.success(this, "Deleted Successfully.");
             emptyField();
         });
 
@@ -161,12 +161,12 @@ public class ManageEmployees extends JFrame implements ActionListener {
         modifyDetails.setBounds(320, 460, 100, 40);
         modifyDetails.addActionListener(_ -> {
             if(employeeFullName == null) {
-                JOptionPane.showMessageDialog(this, "Please select an employee first.");
+                Validator.forbidden(this,"Please select an employee first.");
                 return;
             }
             modifyAndSaveChanges();
             emptyField();
-            JOptionPane.showMessageDialog(this, "Updated Successfully");
+            Validator.success(this, "Updated Successfully");
 
         });
         panel.add(modifyDetails);
@@ -214,7 +214,7 @@ public class ManageEmployees extends JFrame implements ActionListener {
             currentEmployee.setPagIbig(editPAGIBIG.getText().trim());
             FileFunctions.update(employeeFullName, employeeList.get(employeeFullName));
         }catch(NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid position");
+            Validator.error(this, "Please enter a valid position");
         }
 
 
@@ -239,7 +239,7 @@ public class ManageEmployees extends JFrame implements ActionListener {
                 Employee employee = new Employee(fullName, phone_number, _position, sssNumber, tinNumber, philHealthNumber, pagIbigNumber, 0, 0 ,0);
                 FileFunctions.create("employees_details", employee);
                 emptyTextField();
-                JOptionPane.showMessageDialog(this, "Added successfully.");
+                Validator.success(this, "Added successfully.");
                 return;
             }
 

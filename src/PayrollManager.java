@@ -97,7 +97,7 @@ public class PayrollManager extends JFrame implements ActionListener {
         // button listener
         button.addActionListener(_ -> {
             if(employeeName.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please select an employee first.");
+                Validator.forbidden(this, "Please select an employee first.");
                 return;
             }
             try {
@@ -150,7 +150,7 @@ public class PayrollManager extends JFrame implements ActionListener {
                 // Updating the JTextArea with the new payslip information
                 updatePayslipTextArea();
             }catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(panel, "Please input a valid number.");
+                Validator.error(this, "Please input a valid number.");
             }
         });
         panel.add(button);

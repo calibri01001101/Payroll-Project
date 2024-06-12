@@ -76,7 +76,7 @@ public class PayrollList extends JFrame  {
                 employee.getValue().setTotalDeductions(0);
             }
             FileFunctions.updateAll(employeeHashMap);
-            JOptionPane.showMessageDialog(this, "Reset Successfully");
+            Validator.success(this, "Reset Successfully");
         });
         panel.add(resetButton);
 
