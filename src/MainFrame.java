@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class MainFrame extends JFrame implements Assets {
+public class MainFrame extends JFrame {
     // JLayeredPane that will hold the page to show
     JLayeredPane layeredPane;
     public MainFrame() {
@@ -42,7 +42,7 @@ public class MainFrame extends JFrame implements Assets {
     public void sideBar() {
         JPanel panel = new JPanel();
         panel.setBounds(0, 0, 200, 600);
-        panel.setBackground(PRIMARY_BACKGROUND);
+        panel.setBackground(Assets.PRIMARY_BACKGROUND);
         panel.setLayout(null);
         add(panel);
         // Creating an instance of the sidebar button/texts
@@ -56,7 +56,7 @@ public class MainFrame extends JFrame implements Assets {
     // Sidebar label selection
     public void sideBarButton(JPanel panel, String title, int y) {
         JLabel label = new JLabel(title);
-        label.setForeground(WHITE);
+        label.setForeground(Assets.WHITE);
         label.setBounds(20, y, 200, 25);
         label.setFont(new Font(label.getFont().getName(), Font.BOLD, 18));
 

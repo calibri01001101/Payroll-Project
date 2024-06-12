@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
-public class PayrollManager extends JFrame implements Assets, Calculators, ActionListener {
+public class PayrollManager extends JFrame implements ActionListener {
     private final JTextField employeeName = new JTextField();
     private final JTextField salaryRate = new JTextField("560");
     private final JTextField daysWorked = new JTextField();
@@ -42,7 +42,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     public JPanel payrollPage() {
         // Storing the getting all the employees data from the file
         JPanel panel = new JPanel();
-        panel.setBackground(WHITE);
+        panel.setBackground(Assets.WHITE);
         panel.setBounds(0, 0, 800, 600);
         panel.setLayout(null);
         add(panel);
@@ -54,7 +54,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     public JPanel salaryManagementPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        panel.setBackground(PRIMARY_BACKGROUND);
+        panel.setBackground(Assets.PRIMARY_BACKGROUND);
         panel.setBorder(new RoundedBorder(20, Color.BLACK));
         panel.setBounds(10, 10, 300, 500);
         add(panel);
@@ -74,7 +74,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     public void title(JPanel panel) {
         JLabel label = new JLabel("SALARY MANAGER");
         label.setBounds(10, 10, 290, 20);
-        label.setForeground(WHITE);
+        label.setForeground(Assets.WHITE);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         panel.add(label);
     }
@@ -82,7 +82,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     public void textField(JPanel panel, int y, String title, JTextField value) {
         JLabel label = new JLabel(title);
         label.setBounds(10, y + 20, 250, 30);
-        label.setForeground(WHITE);
+        label.setForeground(Assets.WHITE);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         panel.add(label);
         value.setBounds(10, y, 280, 30);
@@ -92,8 +92,8 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     public void calculateButton(JPanel panel) {
         JButton button = new JButton("Calculate");
         button.setBounds(190, 460, 100, 20);
-        button.setForeground(WHITE);
-        button.setBackground(SECONDARY_BACKGROUND);
+        button.setForeground(Assets.WHITE);
+        button.setBackground(Assets.SECONDARY_BACKGROUND);
         // button listener
         button.addActionListener(_ -> {
             if(employeeName.getText().isEmpty()) {
@@ -113,20 +113,20 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
                 int _regularHoliday = regularHoliday.getText().isEmpty() ? 0 : Integer.parseInt(regularHoliday.getText());
                 int _specialHoliday = specialHolidays.getText().isEmpty() ? 0 : Integer.parseInt(specialHolidays.getText());
                 // Earnings calculation
-                double _basicPay = Calculators.basicPay(_daysWorked, _salaryRate);
-                double _overtimePay = Calculators.overtime(_hoursOvertime, _salaryRate);
-                double _holidayPay = Calculators.holidayPay(_regularHoliday, _specialHoliday, _salaryRate);
-                grossPay = Calculators.grossPayCalculator(_basicPay, _overtimePay, _holidayPay);
+                double _basicPay = CalculatorUtils.basicPay(_daysWorked, _salaryRate);
+                double _overtimePay = CalculatorUtils.overtime(_hoursOvertime, _salaryRate);
+                double _holidayPay = CalculatorUtils.holidayPay(_regularHoliday, _specialHoliday, _salaryRate);
+                grossPay = CalculatorUtils.grossPayCalculator(_basicPay, _overtimePay, _holidayPay);
                 // Deductions calculation
-                double _tinDeduction = Calculators.tinDeduction();
-                double _sssDeduction = Calculators.sssDeduction(grossPay);
-                double _pagIbigDeduction = Calculators.pagibigDeduction();
-                double _philHealthDeduction = Calculators.philHealthDeduction();
-                double _lateDeduction = Calculators.lateDeduction(_hoursLate, _salaryRate);
-                double _baleDeduction = Calculators.baleDeduction(_advancedPay);
+                double _tinDeduction = CalculatorUtils.tinDeduction();
+                double _sssDeduction = CalculatorUtils.sssDeduction(grossPay);
+                double _pagIbigDeduction = CalculatorUtils.pagibigDeduction();
+                double _philHealthDeduction = CalculatorUtils.philHealthDeduction();
+                double _lateDeduction = CalculatorUtils.lateDeduction(_hoursLate, _salaryRate);
+                double _baleDeduction = CalculatorUtils.baleDeduction(_advancedPay);
                 // Total deductions and net pay calculation
-                totalGovernmentDeductions = Calculators.totalDeductions(_tinDeduction, _pagIbigDeduction, _sssDeduction, _philHealthDeduction, _lateDeduction, _baleDeduction);
-                netPay = Calculators.netPayCalculator(grossPay, totalGovernmentDeductions);
+                totalGovernmentDeductions = CalculatorUtils.totalDeductions(_tinDeduction, _pagIbigDeduction, _sssDeduction, _philHealthDeduction, _lateDeduction, _baleDeduction);
+                netPay = CalculatorUtils.netPayCalculator(grossPay, totalGovernmentDeductions);
                 // Setting the text for each label in the panel
                 fullNameLabel.setText(employeeName.getText());
                 basicPay.setText(numberFormatter(_basicPay));
@@ -293,8 +293,8 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     //print button for payslip
     public void printButton(JTextArea panel) {
         JButton button = new JButton("Save & Print");
-        button.setBackground(SECONDARY_BACKGROUND);
-        button.setForeground(WHITE);
+        button.setBackground(Assets.SECONDARY_BACKGROUND);
+        button.setForeground(Assets.WHITE);
         button.setBounds(300, 440, 120, 40);
         button.addActionListener(e -> {
             try {

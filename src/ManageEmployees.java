@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
 
-public class ManageEmployees extends JFrame implements Assets, ActionListener {
+public class ManageEmployees extends JFrame implements ActionListener {
     private final JTextField lastName = new JTextField();
     private final JTextField firstName = new JTextField();
     private final JTextField middleInitial = new JTextField();
@@ -32,7 +32,7 @@ public class ManageEmployees extends JFrame implements Assets, ActionListener {
     // Panel for the employee page that holds all the components
     public JPanel addEmployeePage() {
         addEmployeePanel = new JPanel();
-        addEmployeePanel.setBackground(WHITE);
+        addEmployeePanel.setBackground(Assets.WHITE);
         addEmployeePanel.setBounds(0, 0, 800, 600);
         addEmployeePanel.setLayout(null);
         add(addEmployeePanel);
@@ -44,7 +44,7 @@ public class ManageEmployees extends JFrame implements Assets, ActionListener {
     public JPanel personalInformationPanel() {
         personalInformationPanel = new JPanel();
         personalInformationPanel.setLayout(null);
-        personalInformationPanel.setBackground(PRIMARY_BACKGROUND);
+        personalInformationPanel.setBackground(Assets.PRIMARY_BACKGROUND);
         personalInformationPanel.setBounds(20, 20, 300, 520);
         personalInformationPanel.setBorder(new RoundedBorder(20, Color.BLACK));
         panelInformationLabel(personalInformationPanel, "Add Employee");
@@ -64,7 +64,7 @@ public class ManageEmployees extends JFrame implements Assets, ActionListener {
     public void panelInformationLabel(JPanel panel, String title) {
         JLabel label = new JLabel(title);
         label.setBounds(10, 10, 200, 20);
-        label.setForeground(WHITE);
+        label.setForeground(Assets.WHITE);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         panel.add(label);
     }
@@ -72,7 +72,7 @@ public class ManageEmployees extends JFrame implements Assets, ActionListener {
     public void textField(JPanel panel, int y, String title, JTextField value) {
         JLabel label = new JLabel(title);
         label.setBounds(10, y + 20, 200, 30);
-        label.setForeground(WHITE);
+        label.setForeground(Assets.WHITE);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         panel.add(label);
         value.setBounds(10, y, 280, 30);
@@ -82,14 +82,15 @@ public class ManageEmployees extends JFrame implements Assets, ActionListener {
     public void addButton(JPanel panel) {
         JButton button = new JButton("ADD");
         button.setBounds(190, 490, 100, 20);
-        button.setBackground(SECONDARY_BACKGROUND);
-        button.setForeground(WHITE);
+        button.setBackground(Assets.SECONDARY_BACKGROUND);
+        button.setForeground(Assets.WHITE);
         button.addActionListener(_ -> addNewEmployee());
         panel.add(button);
     }
     // Function to empty text fields after adding an employee
     public void emptyTextField() {
         lastName.setText("");
+        firstName.setText("");
         phoneNumber.setText("");
         position.setText("");
         sss.setText("");
@@ -103,7 +104,7 @@ public class ManageEmployees extends JFrame implements Assets, ActionListener {
     public void editEmployeePanel(JPanel panel) {
         JPanel editEmployeePanel = new JPanel();
         editEmployeePanel.setLayout(null);
-        editEmployeePanel.setBackground(PRIMARY_BACKGROUND);
+        editEmployeePanel.setBackground(Assets.PRIMARY_BACKGROUND);
         editEmployeePanel.setBounds(330, 20, 440, 520);
         editEmployeePanel.setBorder(new RoundedBorder(20, Color.BLACK));
         panel.add(editEmployeePanel);
@@ -124,8 +125,8 @@ public class ManageEmployees extends JFrame implements Assets, ActionListener {
 
     void selectButton(JPanel panel) {
         JButton selectButton = new JButton("Select");
-        selectButton.setForeground(WHITE);
-        selectButton.setBackground(SECONDARY_BACKGROUND);
+        selectButton.setForeground(Assets.WHITE);
+        selectButton.setBackground(Assets.SECONDARY_BACKGROUND);
         selectButton.setBounds(300, 50, 80, 30);
         selectButton.addActionListener(_ -> {
             employeeLookUp();
@@ -155,8 +156,8 @@ public class ManageEmployees extends JFrame implements Assets, ActionListener {
 
     void modifyEmployeeInfoButton(JPanel panel) {
         JButton modifyDetails = new JButton("Modify");
-        modifyDetails.setBackground(SECONDARY_BACKGROUND);
-        modifyDetails.setForeground(WHITE);
+        modifyDetails.setBackground(Assets.SECONDARY_BACKGROUND);
+        modifyDetails.setForeground(Assets.WHITE);
         modifyDetails.setBounds(320, 460, 100, 40);
         modifyDetails.addActionListener(_ -> {
             if(employeeFullName == null) {

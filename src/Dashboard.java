@@ -9,13 +9,13 @@ import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
-public class Dashboard extends JFrame implements Assets{
+public class Dashboard extends JFrame {
     // Panel for the dashboard page that holds all the components
     // This dashboard page contains the summary of all the amounts and all the employee's details,
     public JPanel dashboardPage() {
         // This panel is the panel for the whole dashboard page
         JPanel dashboardPanel = new JPanel();
-        dashboardPanel.setBackground(WHITE);
+        dashboardPanel.setBackground(Assets.WHITE);
         dashboardPanel.setBounds(0, 0, 800, 600);
         dashboardPanel.setLayout(null);
         // To add this panel on the main container which is the main frame
@@ -32,11 +32,11 @@ public class Dashboard extends JFrame implements Assets{
     public void companyNameLabel(JPanel panel) {
         JLabel label = new JLabel("MAKTRANS CORPORATION");
         label.setBounds(20, 10, 500, 100);
-        label.setForeground(PRIMARY_BACKGROUND);
+        label.setForeground(Assets.PRIMARY_BACKGROUND);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 35));
         JLabel label2 = new JLabel("Payroll System");
         label2.setBounds(20, 40, 500, 100);
-        label2.setForeground(PRIMARY_BACKGROUND);
+        label2.setForeground(Assets.PRIMARY_BACKGROUND);
         label2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
         panel.add(label2);
         panel.add(label);
@@ -45,31 +45,31 @@ public class Dashboard extends JFrame implements Assets{
     public JPanel summaryBox(int x, String title, String amount) {
         // Panel that holds the Heading and subheading or the amount of money and the text above it
         JPanel panel = new JPanel();
-        panel.setBackground(PRIMARY_BACKGROUND);
+        panel.setBackground(Assets.PRIMARY_BACKGROUND);
         panel.setBounds(x, 20, 180, 100);
-        Border roundedBorder = new RoundedBorder(20, PRIMARY_BACKGROUND);
+        Border roundedBorder = new RoundedBorder(20, Assets.PRIMARY_BACKGROUND);
         panel.setBorder(roundedBorder);
         panel.setLayout(null);
         add(panel);
         // Text above the amount label
         JLabel heading = new JLabel(title);
-        heading.setForeground(SUBHEADING_COLOR);
+        heading.setForeground(Assets.SUBHEADING_COLOR);
         heading.setBounds(10, 10, 180, heading.getPreferredSize().height);
         panel.add(heading);
         // The amount of money label
         JLabel subHeading = new JLabel(amount);
-        subHeading.setForeground(SECONDARY_BACKGROUND);
+        subHeading.setForeground(Assets.SECONDARY_BACKGROUND);
         subHeading.setFont(new Font(subHeading.getFont().getName(), Font.BOLD, 25));
         subHeading.setBounds(10, 30, 180, 25);
-        subHeading.setForeground(WHITE);
+        subHeading.setForeground(Assets.WHITE);
         panel.add(subHeading);
         return panel;
     }
-
+    // Whole table that shows employee details
     public JPanel tablePanel() {
         JPanel panel = new JPanel();
         panel.setBounds(20, 140, 750, 400 );
-        panel.setBackground(PRIMARY_BACKGROUND);
+        panel.setBackground(Assets.PRIMARY_BACKGROUND);
         panel.setLayout(new BorderLayout());
 
         String[][] data = employeesData();
@@ -88,7 +88,9 @@ public class Dashboard extends JFrame implements Assets{
         return panel;
 
     }
+    // Getting and returning the employees data in to 2d array
     public String[][] employeesData() {
+        // Getting the employees data using our built-in function and storing what it returns in to a hasmpa
         Map<String, Employee> employeesHashMap = FileFunctions.get();
         List<String[]> employeesList = new ArrayList<>();
         for(Map.Entry<String, Employee> employee : employeesHashMap.entrySet()) {
@@ -103,7 +105,7 @@ public class Dashboard extends JFrame implements Assets{
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                c.setBackground(row % 2 == 0 ? WHITE : SECONDARY_BACKGROUND);
+                c.setBackground(row % 2 == 0 ? Assets.WHITE : Assets.SECONDARY_BACKGROUND);
                 return c;
             }
         });

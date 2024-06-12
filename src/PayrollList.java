@@ -6,10 +6,10 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PayrollList extends JFrame implements Assets {
+public class PayrollList extends JFrame  {
     public JPanel payrollList() {
         JPanel panel = new JPanel();
-        panel.setBackground(WHITE);
+        panel.setBackground(Assets.WHITE);
         panel.setBounds(0, 0, 800, 600);
         panel.setLayout(null);
         add(panel);
@@ -22,7 +22,7 @@ public class PayrollList extends JFrame implements Assets {
     public JPanel payrollTable() {
         JPanel panel = new JPanel();
         panel.setBounds(20, 20, 750, 490 );
-        panel.setBackground(PRIMARY_BACKGROUND);
+        panel.setBackground(Assets.PRIMARY_BACKGROUND);
         panel.setLayout(new BorderLayout());
 
         String[][] data = employeesList();
@@ -65,7 +65,7 @@ public class PayrollList extends JFrame implements Assets {
     public void resetButton(JPanel panel) {
         JButton resetButton = new JButton("RESET");
         resetButton.setBounds(670, 520, 100, 20);
-        resetButton.setForeground(WHITE);
+        resetButton.setForeground(Assets.WHITE);
         resetButton.setBackground(Color.RED);
 
         resetButton.addActionListener(_ -> {
