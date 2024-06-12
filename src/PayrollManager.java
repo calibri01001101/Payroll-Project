@@ -34,7 +34,6 @@ public class PayrollManager extends JFrame implements ActionListener {
     private double netPay;
     private static JComboBox names;
     JTextArea payslipTextArea = new JTextArea();
-    private final DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
     // Hashmap for the list of employees
     Map<String, Employee> employeeList = FileFunctions.get();
     private Employee employee;
@@ -101,17 +100,13 @@ public class PayrollManager extends JFrame implements ActionListener {
                 return;
             }
             try {
-                // I used ternary operator for less line of codes
-                // Example
-                // salaryRate.getText().isEmpty() ? 0 : Double.parseDouble(salaryRate.getText());
-                // if the text is empty, set the value to zero else set the value by getting the text from text field and converting it to a double
-                double _salaryRate = salaryRate.getText().isEmpty() ? 0 : Double.parseDouble(salaryRate.getText());
-                int _daysWorked = daysWorked.getText().isEmpty() ? 0 : Integer.parseInt(daysWorked.getText());
-                int _hoursOvertime = hoursOvertime.getText().isEmpty() ? 0 : Integer.parseInt(hoursOvertime.getText());
-                int _hoursLate = hoursLate.getText().isEmpty() ? 0 : Integer.parseInt(hoursLate.getText());
-                double _advancedPay = advancedPay.getText().isEmpty() ? 0 : Double.parseDouble(advancedPay.getText());
-                int _regularHoliday = regularHoliday.getText().isEmpty() ? 0 : Integer.parseInt(regularHoliday.getText());
-                int _specialHoliday = specialHolidays.getText().isEmpty() ? 0 : Integer.parseInt(specialHolidays.getText());
+                double _salaryRate = Util.getDouble(salaryRate);
+                int _daysWorked = Util.getInt(daysWorked);
+                int _hoursOvertime = Util.getInt(hoursOvertime);
+                int _hoursLate =Util.getInt(hoursLate);
+                double _advancedPay = Util.getDouble(advancedPay);
+                int _regularHoliday = Util.getInt(regularHoliday);
+                int _specialHoliday = Util.getInt(specialHolidays);
                 // Earnings calculation
                 double _basicPay = CalculatorUtils.basicPay(_daysWorked, _salaryRate);
                 double _overtimePay = CalculatorUtils.overtime(_hoursOvertime, _salaryRate);
@@ -128,21 +123,22 @@ public class PayrollManager extends JFrame implements ActionListener {
                 totalGovernmentDeductions = CalculatorUtils.totalDeductions(_tinDeduction, _pagIbigDeduction, _sssDeduction, _philHealthDeduction, _lateDeduction, _baleDeduction);
                 netPay = CalculatorUtils.netPayCalculator(grossPay, totalGovernmentDeductions);
                 // Setting the text for each label in the panel
-                fullNameLabel.setText(employeeName.getText());
-                basicPay.setText(numberFormatter(_basicPay));
-                overtimePay.setText(numberFormatter(_overtimePay));
-                holidayPay.setText(numberFormatter(_holidayPay));
-                tinDeduction.setText(numberFormatter(_tinDeduction));
-                sssDeduction.setText(numberFormatter(_sssDeduction));
-                pagibigDeduction.setText(numberFormatter(_pagIbigDeduction));
-                philHealthDeduction.setText(numberFormatter(_philHealthDeduction));
-                lateDeduction.setText(numberFormatter(_lateDeduction));
-                baleDeduction.setText(numberFormatter(_baleDeduction));
-                grossPayAmount.setText(numberFormatter(grossPay));
-                deductionsTotalAmount.setText(numberFormatter(totalGovernmentDeductions));
-                netPayAmount.setText(numberFormatter(netPay));
+                Util.setLabelText(fullNameLabel, employeeName.getText());
+                Util.setLabelText(basicPay, Util.numberFormatter(_basicPay));
+                Util.setLabelText(overtimePay, Util.numberFormatter(_overtimePay));
+                Util.setLabelText(holidayPay, Util.numberFormatter(_holidayPay));
+                Util.setLabelText(tinDeduction, Util.numberFormatter(_tinDeduction));
+                Util.setLabelText(sssDeduction, Util.numberFormatter(_sssDeduction));
+                Util.setLabelText(pagibigDeduction, Util.numberFormatter(_pagIbigDeduction));
+                Util.setLabelText(philHealthDeduction, Util.numberFormatter(_philHealthDeduction));
+                Util.setLabelText(lateDeduction, Util.numberFormatter(_lateDeduction));
+                Util.setLabelText(baleDeduction, Util.numberFormatter(_baleDeduction));
+                Util.setLabelText(grossPayAmount, Util.numberFormatter(grossPay));
+                Util.setLabelText(deductionsTotalAmount, Util.numberFormatter(totalGovernmentDeductions));
+                Util.setLabelText(netPayAmount, Util.numberFormatter(netPay));
+
                 // Getting the employee details in the hashmap list and
-                employee = employeeList.get(employeeName.getText().trim());
+                employee = employeeList.get(Util.getTextFieldTextAndTrim(employeeName));
                 employee.setNetPay(netPay);
                 employee.setGrossPay(grossPay);
                 employee.setTotalDeductions(totalGovernmentDeductions);
@@ -305,11 +301,6 @@ public class PayrollManager extends JFrame implements ActionListener {
             }
         });
         panel.add(button);
-    }
-
-
-    public String numberFormatter(Double amount) {
-        return decimalFormat.format(amount);
     }
     // Event listener for the combo box
     @Override

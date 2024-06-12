@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.Color;
 
 public class Assets {
@@ -16,4 +17,9 @@ public class Assets {
     public static Color hexToColor(String hex) {
         return Color.decode(hex);
     }
+
+    public static void clearTextFieldText(JTextField textField) {
+        textField.setText("");
+    }
+
 }

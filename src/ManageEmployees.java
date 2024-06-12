@@ -147,6 +147,7 @@ public class ManageEmployees extends JFrame implements ActionListener {
             }
 
             FileFunctions.delete(employeeFullName);
+            emptyField();
             Validator.success(this, "Deleted Successfully.");
             emptyField();
         });
@@ -173,15 +174,17 @@ public class ManageEmployees extends JFrame implements ActionListener {
     }
 
     public void emptyField() {
-        phoneNumber.setText("");
-        position.setText("");
-        sss.setText("");
-        tin.setText("");
-        philHealth.setText("");
-        pagIbig.setText("");
+        Util.clearTextFieldText(phoneNumber);
+        Util.clearTextFieldText(position);
+        Util.clearTextFieldText(sss);
+        Util.clearTextFieldText(tin);
+        Util.clearTextFieldText(philHealth);
+        Util.clearTextFieldText(pagIbig);
         employeeFullName = null;
 
     }
+
+
 
 
 
@@ -206,36 +209,33 @@ public class ManageEmployees extends JFrame implements ActionListener {
 
     public void modifyAndSaveChanges() {
         try {
-            currentEmployee.setPhoneNumber(editPhoneNumber.getText().trim());
-            currentEmployee.setPosition(editPosition.getText().trim());
-            currentEmployee.setSss(editSSS.getText().trim());
-            currentEmployee.setTin(editTIN.getText().trim());
-            currentEmployee.setPhilHeath(editPHILHEALTH.getText().trim());
-            currentEmployee.setPagIbig(editPAGIBIG.getText().trim());
+            currentEmployee.setPhoneNumber(Util.getTextFieldTextAndTrim(editPhoneNumber));
+            currentEmployee.setPosition(Util.getTextFieldTextAndTrim(editPosition));
+            currentEmployee.setSss(Util.getTextFieldTextAndTrim(editSSS));
+            currentEmployee.setTin(Util.getTextFieldTextAndTrim(editTIN));
+            currentEmployee.setPhilHeath(Util.getTextFieldTextAndTrim(editPHILHEALTH));
+            currentEmployee.setPagIbig(Util.getTextFieldTextAndTrim(editPAGIBIG));
             FileFunctions.update(employeeFullName, employeeList.get(employeeFullName));
         }catch(NumberFormatException e) {
             Validator.error(this, "Please enter a valid position");
         }
-
-
     }
     // function for adding a new employee
     public void addNewEmployee() {
         try {
             // Setting the value of the variable by getting the value of the text field
-            String last_name = lastName.getText().trim();
-            String first_name = firstName.getText().trim();
-            String middle_initial = middleInitial.getText().trim();
+            String last_name = Util.getTextFieldTextAndTrim(lastName);
+            String first_name = Util.getTextFieldTextAndTrim(firstName);
+            String middle_initial = Util.getTextFieldTextAndTrim(middleInitial);
             String fullName = first_name.concat(STR." \{middle_initial}").concat(STR." \{last_name}");
-            String phone_number = phoneNumber.getText().trim();
-            String _position = position.getText().trim();
-            // I used ternary operator here so if the value of the text field is empty it will show unknown
-            String sssNumber = sss.getText().trim().isEmpty() ? "unknown" : sss.getText().trim();
-            String tinNumber = tin.getText().trim().isEmpty() ? "unknown" : tin.getText().trim();
-            String philHealthNumber = philHealth.getText().trim().isEmpty() ? "unknown" : philHealth.getText().trim();
-            String pagIbigNumber = pagIbig.getText().trim().trim().isEmpty() ? "unknown" : pagIbig.getText().trim();
+            String phone_number = Util.getTextFieldTextAndTrim(phoneNumber);
+            String _position = Util.getTextFieldTextAndTrim(position);
+            String sssNumber = Util.isUnknown(sss);
+            String tinNumber = Util.isUnknown(tin);
+            String philHealthNumber = Util.isUnknown(philHealth);
+            String pagIbigNumber = Util.isUnknown(pagIbig);
             // Checking if the value of full name, phone number and position is set.
-            if(!last_name.isEmpty() && !phone_number.isEmpty() && !_position.isEmpty()) {
+            if(Util.isEmpty(fullName) && Util.isEmpty(phone_number) && Util.isEmpty(_position)) {
                 Employee employee = new Employee(fullName, phone_number, _position, sssNumber, tinNumber, philHealthNumber, pagIbigNumber, 0, 0 ,0);
                 FileFunctions.create("employees_details", employee);
                 emptyTextField();
@@ -244,7 +244,7 @@ public class ManageEmployees extends JFrame implements ActionListener {
             }
 
             // If important information is empty this will show
-            JOptionPane.showMessageDialog(this, "Full Name, Phone Number and Position can't be empty.");
+            Validator.error(this, "Full Name, Phone Number and Position can't be empty.");
 
         } catch (InputMismatchException e) {
             JOptionPane.showMessageDialog(addEmployeePage(), "Invalid input. Please try again.");
