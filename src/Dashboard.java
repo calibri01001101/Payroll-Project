@@ -72,7 +72,7 @@ public class Dashboard extends JFrame implements Assets{
         panel.setBackground(PRIMARY_BACKGROUND);
         panel.setLayout(new BorderLayout());
 
-        String[][] data = employeesData("employees_details");
+        String[][] data = employeesData();
         Object[] columns = {"Full Name", "Phone Number", "Position"};
         DefaultTableModel model = new DefaultTableModel(data, columns);
 
@@ -88,7 +88,7 @@ public class Dashboard extends JFrame implements Assets{
         return panel;
 
     }
-    public String[][] employeesData(String fileLocation) {
+    public String[][] employeesData() {
         Map<String, Employee> employeesHashMap = FileFunctions.get();
         List<String[]> employeesList = new ArrayList<>();
         for(Map.Entry<String, Employee> employee : employeesHashMap.entrySet()) {

@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
@@ -128,9 +127,11 @@ public class ManageEmployees extends JFrame implements Assets, ActionListener {
         selectButton.setForeground(WHITE);
         selectButton.setBackground(SECONDARY_BACKGROUND);
         selectButton.setBounds(300, 50, 80, 30);
-        selectButton.addActionListener(e -> {
+        selectButton.addActionListener(_ -> {
             employeeLookUp();
-        });
+            }
+
+        );
         panel.add(selectButton);
     }
     void removeEmployeeButton(JPanel panel) {
@@ -138,7 +139,17 @@ public class ManageEmployees extends JFrame implements Assets, ActionListener {
         removeEmployee.setForeground(Color.WHITE);
         removeEmployee.setBackground(Color.RED);
         removeEmployee.setBounds(210, 460, 100, 40);
-        removeEmployee.addActionListener(_ -> FileFunctions.delete(employeeFullName));
+        removeEmployee.addActionListener(_ -> {
+            if(employeeFullName == null) {
+                JOptionPane.showMessageDialog(this, "Please select an employee first.");
+                return;
+            }
+
+            FileFunctions.delete(employeeFullName);
+            JOptionPane.showMessageDialog(this, "Deleted Successfully.");
+            emptyField();
+        });
+
         panel.add(removeEmployee);
     }
 
@@ -147,11 +158,30 @@ public class ManageEmployees extends JFrame implements Assets, ActionListener {
         modifyDetails.setBackground(SECONDARY_BACKGROUND);
         modifyDetails.setForeground(WHITE);
         modifyDetails.setBounds(320, 460, 100, 40);
-        modifyDetails.addActionListener(e -> {
+        modifyDetails.addActionListener(_ -> {
+            if(employeeFullName == null) {
+                JOptionPane.showMessageDialog(this, "Please select an employee first.");
+                return;
+            }
             modifyAndSaveChanges();
+            emptyField();
+            JOptionPane.showMessageDialog(this, "Updated Successfully");
+
         });
         panel.add(modifyDetails);
     }
+
+    public void emptyField() {
+        phoneNumber.setText("");
+        position.setText("");
+        sss.setText("");
+        tin.setText("");
+        philHealth.setText("");
+        pagIbig.setText("");
+        employeeFullName = null;
+
+    }
+
 
 
     public void employeesNameComboBox(JPanel panel) {
@@ -207,12 +237,13 @@ public class ManageEmployees extends JFrame implements Assets, ActionListener {
             if(!last_name.isEmpty() && !phone_number.isEmpty() && !_position.isEmpty()) {
                 Employee employee = new Employee(fullName, phone_number, _position, sssNumber, tinNumber, philHealthNumber, pagIbigNumber, 0, 0 ,0);
                 FileFunctions.create("employees_details", employee);
-                JOptionPane.showMessageDialog(addEmployeePage(), "Added successfully.");
+                emptyTextField();
+                JOptionPane.showMessageDialog(this, "Added successfully.");
                 return;
             }
 
             // If important information is empty this will show
-            JOptionPane.showMessageDialog(addEmployeePage(), "Full Name, Phone Number and Position can't be empty.");
+            JOptionPane.showMessageDialog(this, "Full Name, Phone Number and Position can't be empty.");
 
         } catch (InputMismatchException e) {
             JOptionPane.showMessageDialog(addEmployeePage(), "Invalid input. Please try again.");

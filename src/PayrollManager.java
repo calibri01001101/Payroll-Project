@@ -37,6 +37,7 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     private final DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
     // Hashmap for the list of employees
     Map<String, Employee> employeeList = FileFunctions.get();
+    private Employee employee;
     // Panel for the payroll page that holds all the components
     public JPanel payrollPage() {
         // Storing the getting all the employees data from the file
@@ -95,6 +96,10 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
         button.setBackground(SECONDARY_BACKGROUND);
         // button listener
         button.addActionListener(_ -> {
+            if(employeeName.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please select an employee first.");
+                return;
+            }
             try {
                 // I used ternary operator for less line of codes
                 // Example
@@ -137,14 +142,13 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
                 deductionsTotalAmount.setText(numberFormatter(totalGovernmentDeductions));
                 netPayAmount.setText(numberFormatter(netPay));
                 // Getting the employee details in the hashmap list and
-                Employee employee = employeeList.get(employeeName.getText().trim());
+                employee = employeeList.get(employeeName.getText().trim());
                 employee.setNetPay(netPay);
                 employee.setGrossPay(grossPay);
                 employee.setTotalDeductions(totalGovernmentDeductions);
 
                 // Updating the JTextArea with the new payslip information
                 updatePayslipTextArea();
-                FileFunctions.update(employee.getFullName(), employee);
             }catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(panel, "Please input a valid number.");
             }
@@ -157,6 +161,52 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
         payslipTextArea.setBounds(320, 10, 450, 500);
         payslipTextArea.setBorder(new RoundedBorder(20, Color.BLACK));
         payslipTextArea.setLayout(null);
+        String payslipText = String.format(
+                """                        
+                        ========================================================
+                        MAKTRANS CORPORATION %63s
+                        ========================================================
+                        Employee name: %s
+                        Salary Rate: %s
+                        --------------------------------------------------------
+                        Earnings
+                        --------------------------------------------------------
+                        Basic Pay: %s
+                        Overtime Pay: %s
+                        Holiday Pay: %s
+                        --------------------------------------------------------
+                        Deductions
+                        --------------------------------------------------------
+                        TIN Deduction: %s
+                        SSS Deduction: %s
+                        Pag-ibig Deduction: %s
+                        PhilHealth Deduction: %s
+                        Late Deduction: %s
+                        Bale Deduction: %s
+                        --------------------------------------------------------
+                        Gross Pay: %s
+                        Total Deductions: %s
+                        Net Pay: %s
+                        ========================================================""",
+                dateAndTime(),
+                employeeName.getText(),
+                salaryRate.getText(),
+                basicPay.getText(),
+                overtimePay.getText(),
+                holidayPay.getText(),
+                tinDeduction.getText(),
+                sssDeduction.getText(),
+                pagibigDeduction.getText(),
+                philHealthDeduction.getText(),
+                lateDeduction.getText(),
+                baleDeduction.getText(),
+                grossPayAmount.getText(),
+                deductionsTotalAmount.getText(),
+                netPayAmount.getText()
+        );
+
+
+        payslipTextArea.setText(payslipText);
         printButton(payslipTextArea);
         return payslipTextArea;
     }
@@ -164,64 +214,55 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     // Deductions Panel
     public void updatePayslipTextArea() {
 
-        String payslipText = "========================================================\n" +
-                "MAKTRANS CORPORATION\n" +
-                "========================================================\n" +
-                "Employee name: " + employeeName.getText() + "\n" +
-                "Salary Rate: " + salaryRate.getText() + "\n" +
-                "--------------------------------------------------------\n" +
-                "Earnings\n" +
-                "--------------------------------------------------------\n" +
-                "Basic Pay: " + basicPay.getText() + "\n" +
-                "Overtime Pay: " + overtimePay.getText() + "\n" +
-                "Holiday Pay: " + holidayPay.getText() + "\n" +
-                "--------------------------------------------------------\n" +
-                "Deductions\n" +
-                "--------------------------------------------------------\n" +
-                "TIN Deduction: " + tinDeduction.getText() + "\n" +
-                "SSS Deduction: " + sssDeduction.getText() + "\n" +
-                "Pag-ibig Deduction: " + pagibigDeduction.getText() + "\n" +
-                "PhilHealth Deduction: " + philHealthDeduction.getText() + "\n" +
-                "Late Deduction: " + lateDeduction.getText() + "\n" +
-                "Bale Deduction: " + baleDeduction.getText() + "\n" +
-                "--------------------------------------------------------\n" +
-                "Gross Pay: " + grossPayAmount.getText() + "\n" +
-                "Total Deductions: " + deductionsTotalAmount.getText() + "\n" +
-                "Net Pay: " + netPayAmount.getText() + "\n" +
-                "========================================================";
+        String payslipText = String.format(
+                """                        
+                        ========================================================
+                        MAKTRANS CORPORATION %63s
+                        ========================================================
+                        Employee name: %s
+                        Salary Rate: %s
+                        --------------------------------------------------------
+                        Earnings
+                        --------------------------------------------------------
+                        Basic Pay: %s
+                        Overtime Pay: %s
+                        Holiday Pay: %s
+                        --------------------------------------------------------
+                        Deductions
+                        --------------------------------------------------------
+                        TIN Deduction: %s
+                        SSS Deduction: %s
+                        Pag-ibig Deduction: %s
+                        PhilHealth Deduction: %s
+                        Late Deduction: %s
+                        Bale Deduction: %s
+                        --------------------------------------------------------
+                        Gross Pay: %s
+                        Total Deductions: %s
+                        Net Pay: %s
+                        ========================================================""",
+                dateAndTime(),
+                employeeName.getText(),
+                salaryRate.getText(),
+                basicPay.getText(),
+                overtimePay.getText(),
+                holidayPay.getText(),
+                tinDeduction.getText(),
+                sssDeduction.getText(),
+                pagibigDeduction.getText(),
+                philHealthDeduction.getText(),
+                lateDeduction.getText(),
+                baleDeduction.getText(),
+                grossPayAmount.getText(),
+                deductionsTotalAmount.getText(),
+                netPayAmount.getText()
+        );
+
 
         payslipTextArea.setText(payslipText);
         payslipTextArea.setEditable(false);
     }
 
-    // h1 for government deductions panel
-    public JLabel companyNameLabel() {
-        JLabel label = new JLabel("EXL CORPORATION");
-        label.setBounds(20, 25, 300, 20);
-        label.setForeground(WHITE);
-        label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
-        return label;
-    }
-    // Texts to show the deductions information
-    public void titleAndAmountLabel(JPanel panel, JLabel amountLabel, String title, int y, int x, int x1) {
-        JLabel label = new JLabel(title);
-        label.setBounds(x, y, 150, 100);
-        label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
-        panel.add(label);
-        label.setForeground(WHITE);
-        amountLabel.setBounds(x1, y, 300, 100);
-        amountLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
-        amountLabel.setForeground(WHITE);
-        panel.add(amountLabel);
-    }
-    // EARNING/DEDUCTIONS LABEL
-    public void aboutMoney(JPanel panel, String title, int x) {
-        JLabel label = new JLabel(title);
-        label.setBounds(x, 85, 300, 15);
-        label.setForeground(WHITE);
-        label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
-        panel.add(label);
-    }
     // this is for the name combo box
     void namesComboBox(JPanel panel) {
         names = new JComboBox(getAllNames());
@@ -230,17 +271,14 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
         panel.add(names);
     }
     // This function displays the current time and date
-    JLabel dateAndTime() {
+    String dateAndTime() {
         // Creating an instance of the object DateTimeFormatter and passing an argument for the format of the time and date
         DateTimeFormatter currDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         // Getting the current time and date
         LocalDateTime now = LocalDateTime.now();
         // Displaying the time and date:)
-        JLabel label = new JLabel(currDate.format(now));
-        label.setBounds(340, 10, 200, 10);
-        label.setForeground(WHITE);
-        label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 10));
-        return label;
+        return currDate.format(now);
+
     }
 
     public String[] getAllNames() {
@@ -254,13 +292,14 @@ public class PayrollManager extends JFrame implements Assets, Calculators, Actio
     }
     //print button for payslip
     public void printButton(JTextArea panel) {
-        JButton button = new JButton("Print");
+        JButton button = new JButton("Save & Print");
         button.setBackground(SECONDARY_BACKGROUND);
         button.setForeground(WHITE);
-        button.setBounds(350, 440, 80, 40);
+        button.setBounds(300, 440, 120, 40);
         button.addActionListener(e -> {
             try {
                 panel.print();
+                FileFunctions.update(employee.getFullName(), employee);
             }catch(Exception er) {
                 System.out.println(er.getMessage());
             }

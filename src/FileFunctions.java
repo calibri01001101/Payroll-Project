@@ -25,6 +25,10 @@ public class FileFunctions {
         employeeList.put(key, employeeDetails);
         writer(employeeList);
     }
+
+    public static void updateAll(HashMap<String, Employee> list) {
+        writer(list);
+    }
     public static void delete(String key){
         HashMap<String, Employee> employeeList = get();
         employeeList.remove(key);
@@ -49,7 +53,7 @@ public class FileFunctions {
 
     }
 
-    private static boolean writer(HashMap<String, Employee> employeeList) {
+    private static void writer(HashMap<String, Employee> employeeList) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("employees_details"));
             for(Map.Entry<String, Employee> employee : employeeList.entrySet()) {
@@ -67,10 +71,8 @@ public class FileFunctions {
                 ));
             }
             writer.close();
-            return true;
         } catch(IOException ex) {
             System.out.println(ex.getMessage());
-            return false;
         }
     }
 

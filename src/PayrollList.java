@@ -3,11 +3,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class PayrollList extends JFrame implements Assets {
@@ -18,13 +14,14 @@ public class PayrollList extends JFrame implements Assets {
         panel.setLayout(null);
         add(panel);
         panel.add(payrollTable());
+        resetButton(panel);
         return panel;
     }
 
     // Table for the payroll information
     public JPanel payrollTable() {
         JPanel panel = new JPanel();
-        panel.setBounds(20, 20, 750, 520 );
+        panel.setBounds(20, 20, 750, 490 );
         panel.setBackground(PRIMARY_BACKGROUND);
         panel.setLayout(new BorderLayout());
 
@@ -64,6 +61,27 @@ public class PayrollList extends JFrame implements Assets {
 
         return employeesArray;
     }
+
+    public void resetButton(JPanel panel) {
+        JButton resetButton = new JButton("RESET");
+        resetButton.setBounds(670, 520, 100, 20);
+        resetButton.setForeground(WHITE);
+        resetButton.setBackground(Color.RED);
+
+        resetButton.addActionListener(_ -> {
+            HashMap<String, Employee> employeeHashMap = FileFunctions.get();
+            for(Map.Entry<String, Employee> employee: employeeHashMap.entrySet()){
+                employee.getValue().setNetPay(0);
+                employee.getValue().setGrossPay(0);
+                employee.getValue().setTotalDeductions(0);
+            }
+            FileFunctions.updateAll(employeeHashMap);
+            JOptionPane.showMessageDialog(this, "Reset Successfully");
+        });
+        panel.add(resetButton);
+
+    }
+
 
     private void customizeRow(JTable table) {
         TableColumn column = table.getColumnModel().getColumn(4);
